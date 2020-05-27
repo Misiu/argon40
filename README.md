@@ -127,7 +127,7 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 ***
 
 [blueprint]: https://github.com/custom-components/blueprint
-[buymecoffee]: https://www.buymeacoffee.com/ludeeus
+[buymecoffee]: https://www.buymeacoffee.com/Misiu
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
 [commits-shield]: https://img.shields.io/github/commit-activity/y/Misiu/argon_one.svg?style=for-the-badge
 [commits]: https://github.com/custom-components/blueprint/commits/master
