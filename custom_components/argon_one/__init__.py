@@ -14,7 +14,7 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from sampleclient.client import Client
 
-from custom_components.blueprint.const import (
+from custom_components.argon_one.const import (
     CONF_PASSWORD,
     CONF_USERNAME,
     DOMAIN,

@@ -1,7 +1,7 @@
-"""Constants for blueprint."""
+"""Constants for argon_one."""
 # Base component constants
-NAME = "Blueprint"
-DOMAIN = "blueprint"
+NAME = "Argon ONE"
+DOMAIN = "argon_one"
 DOMAIN_DATA = f"{DOMAIN}_data"
 VERSION = "0.0.1"
 

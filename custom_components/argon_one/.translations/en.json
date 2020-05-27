@@ -1,10 +1,10 @@
 {
     "config": {
-        "title": "Blueprint",
+        "title": "Argon ONE",
         "step": {
             "user": {
                 "title": "Blueprint",
-                "description": "If you need help with the configuration have a look here: https://github.com/custom-components/blueprint",
+                "description": "If you need help with the configuration have a look here: https://github.com/Misiu/argon_one",
                 "data": {
                     "username": "Username",
                     "password": "Password"
@@ -15,7 +15,7 @@
             "auth": "Username/Password is wrong."
         },
         "abort": {
-            "single_instance_allowed": "Only a single configuration of Blueprint is allowed."
+            "single_instance_allowed": "Only a single configuration of Argon ONE is allowed."
         }
     },
     "options": {

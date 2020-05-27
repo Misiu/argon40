@@ -5,5 +5,5 @@ automation: !include automations.yaml
 logger:
   default: error
   logs:
-    custom_components.blueprint: debug
+    custom_components.argon_one: debug
 
