@@ -1,0 +1,13 @@
+{
+  "domain": "argon_one",
+  "name": "Argon ONE",
+  "documentation": "https://github.com/Misiu/argon_one",
+  "dependencies": [],
+  "config_flow": true,
+  "codeowners": [
+    "@Misiu"
+  ],
+  "requirements": [
+    "RPi.GPIO==0.7.0"
+  ]
+}
