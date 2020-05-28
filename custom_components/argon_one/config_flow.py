@@ -1,10 +1,10 @@
-"""Adds config flow for Blueprint."""
+"""Adds config flow for Argon ONE."""
 from homeassistant import config_entries
 from homeassistant.core import callback
 from sampleclient.client import Client
 import voluptuous as vol
 
-from custom_components.blueprint.const import (  # pylint: disable=unused-import
+from custom_components.argon_one.const import (  # pylint: disable=unused-import
     CONF_PASSWORD,
     CONF_USERNAME,
     DOMAIN,

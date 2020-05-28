@@ -8,6 +8,7 @@
     "@Misiu"
   ],
   "requirements": [
+    "sampleclient",
     "RPi.GPIO==0.7.0"
   ]
 }

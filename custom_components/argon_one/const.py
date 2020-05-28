@@ -5,6 +5,9 @@ DOMAIN = "argon_one"
 DOMAIN_DATA = f"{DOMAIN}_data"
 VERSION = "0.0.1"
 
+ATTR_NAME = "speed"
+SERVICE_SET_FAN_SPEED = "set_fan_speed"
+
 ISSUE_URL = "https://github.com/Misiu/argon_one/issues"
 
 # Icons
