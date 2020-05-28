@@ -1,0 +1,7 @@
+# Describes the format for available fan services
+set_fan_speed:
+  description: Sets fan speed.
+  fields:
+    speed:
+      description: Speed setting
+      example: 50
