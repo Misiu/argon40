@@ -1,12 +1,7 @@
 """Support for Argon ONE cases and Argon Fan HAT"""
 import logging
 
-from custom_components.argon_one.const import (
-    ATTR_NAME,
-    DEFAULT_VALUE,
-    DOMAIN,
-    SERVICE_SET_FAN_SPEED,
-)
+from custom_components.argon_one.const import ATTR_NAME, DOMAIN, SERVICE_SET_FAN_SPEED
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.typing import ConfigType, HomeAssistantType, ServiceDataType
 import voluptuous as vol
@@ -27,7 +22,6 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
         _LOGGER.debug("Set fan speed to %s", value)
         hass.bus.async_fire("argon_one_event", {"temp": value, "data": "demo"})
 
-    # Register our service with Home Assistant.
     hass.services.async_register(
         DOMAIN,
         SERVICE_SET_FAN_SPEED,
@@ -35,7 +29,6 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
         schema=SERVICE_SET_FAN_SPEED_SCHEMA,
     )
 
-    # Return boolean to indicate that initialization was successfully.
     return True
 
 
