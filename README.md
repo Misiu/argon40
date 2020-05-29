@@ -8,9 +8,6 @@
 ![Project Maintenance][maintenance-shield]
 [![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
-[![Discord][discord-shield]][discord]
-[![Community Forum][forum-shield]][forum]
-
 _Component to integrate with [argon one][argon_one]._
 
 **This component will set up the following platforms.**
@@ -36,16 +33,10 @@ Platform | Description
 Using your HA configuration directory (folder) as a starting point you should now also have this:
 
 ```text
-custom_components/argon_one/.translations/en.json
-custom_components/argon_one/.translations/nb.json
-custom_components/argon_one/.translations/sensor.nb.json
 custom_components/argon_one/__init__.py
-custom_components/argon_one/binary_sensor.py
-custom_components/argon_one/config_flow.py
 custom_components/argon_one/const.py
 custom_components/argon_one/manifest.json
-custom_components/argon_one/sensor.py
-custom_components/argon_one/switch.py
+custom_components/argon_one/services.yaml
 ```
 
 ## Configuration is done in the UI
@@ -58,18 +49,14 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 
 ***
 
-[argon_one]: https://github.com/Misiu/argon_one
+[argon_one]: https://www.argon40.com/argon-one-raspberry-pi-4-case.html
 [buymecoffee]: https://www.buymeacoffee.com/Misiu
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
 [commits-shield]: https://img.shields.io/github/commit-activity/y/Misiu/argon_one.svg?style=for-the-badge
 [commits]: https://github.com/Misiu/argon_one/commits/master
 [hacs]: https://github.com/custom-components/hacs
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
-[discord]: https://discord.gg/Qa5fW2R
-[discord-shield]: https://img.shields.io/discord/330944238910963714.svg?style=for-the-badge
 [exampleimg]: example.png
-[forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
-[forum]: https://community.home-assistant.io/
 [license-shield]: https://img.shields.io/github/license/Misiu/argon_one.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-%40Misiu-blue.svg?style=for-the-badge
 [releases-shield]: https://img.shields.io/github/release/Misiu/argon_one.svg?style=for-the-badge
