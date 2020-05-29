@@ -3,12 +3,11 @@
   "name": "Argon ONE",
   "documentation": "https://github.com/Misiu/argon_one",
   "dependencies": [],
-  "config_flow": true,
+  "config_flow": false,
   "codeowners": [
     "@Misiu"
   ],
   "requirements": [
-    "sampleclient",
     "RPi.GPIO==0.7.0"
   ]
 }
