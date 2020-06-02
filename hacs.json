@@ -1,5 +1,5 @@
 {
-    "name": "Argon ONE",
+    "name": "Argon40",
     "hacs": "0.24.0",
     "domains": [
         "binary_sensor",

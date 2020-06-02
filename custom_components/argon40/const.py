@@ -1,14 +1,14 @@
-"""Constants for argon_one."""
+"""Constants for Argon40."""
 # Base component constants
-NAME = "Argon ONE"
-DOMAIN = "argon_one"
+NAME = "Argon40"
+DOMAIN = "argon40"
 DOMAIN_DATA = f"{DOMAIN}_data"
 VERSION = "0.0.1"
 
 ATTR_NAME = "speed"
 SERVICE_SET_FAN_SPEED = "set_fan_speed"
 
-ISSUE_URL = "https://github.com/Misiu/argon_one/issues"
+ISSUE_URL = "https://github.com/Misiu/argon40/issues"
 
 # Icons
 ICON = "mdi:format-quote-close"

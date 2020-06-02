@@ -1,4 +1,4 @@
-# Argon ONE Pi 3 & 4 and Argon Fan HAT support for Home Assistant
+# Argon ONE Pi 3 & 4 cases and Argon Fan HAT support for Home Assistant
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
@@ -8,7 +8,7 @@
 ![Project Maintenance][maintenance-shield]
 [![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
-_Component to integrate with [argon one][argon_one]._
+_Component to integrate with [Argon40][argon_one]._
 
 **This component will set up the following platforms.**
 
@@ -24,22 +24,22 @@ Platform | Description
 
 1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
 2. If you do not have a `custom_components` directory (folder) there, you need to create it.
-3. In the `custom_components` directory (folder) create a new folder called `argon_one`.
-4. Download _all_ the files from the `custom_components/argon_one/` directory (folder) in this repository.
+3. In the `custom_components` directory (folder) create a new folder called `argon40`.
+4. Download _all_ the files from the `custom_components/argon40/` directory (folder) in this repository.
 5. Place the files you downloaded in the new directory (folder) you created.
 6. Restart Home Assistant
-7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Argon ONE"
+7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Argon40"
 
 Using your HA configuration directory (folder) as a starting point you should now also have this:
 
 ```text
-custom_components/argon_one/__init__.py
-custom_components/argon_one/const.py
-custom_components/argon_one/manifest.json
-custom_components/argon_one/services.yaml
+custom_components/argon40/__init__.py
+custom_components/argon40/const.py
+custom_components/argon40/manifest.json
+custom_components/argon40/services.yaml
 ```
 
-## Configuration is done in the UI
+## Configuration is done via configuration.yaml
 
 <!---->
 
@@ -50,14 +50,19 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 ***
 
 [argon_one]: https://www.argon40.com/argon-one-raspberry-pi-4-case.html
+
 [buymecoffee]: https://www.buymeacoffee.com/Misiu
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
-[commits-shield]: https://img.shields.io/github/commit-activity/y/Misiu/argon_one.svg?style=for-the-badge
-[commits]: https://github.com/Misiu/argon_one/commits/master
+
+[commits]: https://github.com/Misiu/argon40/commits/master
+[commits-shield]: https://img.shields.io/github/commit-activity/y/Misiu/argon40.svg?style=for-the-badge
+
 [hacs]: https://github.com/custom-components/hacs
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
+
 [exampleimg]: example.png
-[license-shield]: https://img.shields.io/github/license/Misiu/argon_one.svg?style=for-the-badge
+
+[license-shield]: https://img.shields.io/github/license/Misiu/argon40.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-%40Misiu-blue.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/Misiu/argon_one.svg?style=for-the-badge
-[releases]: https://github.com/Misiu/argon_one/releases
+[releases-shield]: https://img.shields.io/github/release/Misiu/argon40.svg?style=for-the-badge
+[releases]: https://github.com/Misiu/argon40/releases

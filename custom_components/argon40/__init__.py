@@ -1,7 +1,7 @@
-"""Support for Argon ONE cases and Argon Fan HAT"""
+"""Support for Argon 40 cases and Argon Fan HAT"""
 import logging
 
-from custom_components.argon_one.const import ATTR_NAME, DOMAIN, SERVICE_SET_FAN_SPEED
+from custom_components.argon40.const import ATTR_NAME, DOMAIN, SERVICE_SET_FAN_SPEED
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.typing import ConfigType, HomeAssistantType, ServiceDataType
 import voluptuous as vol
@@ -14,7 +14,7 @@ SERVICE_SET_FAN_SPEED_SCHEMA = vol.Schema(
 
 
 async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
-    """Set up the Argon ONE component."""
+    """Set up the Argon40 component."""
 
     async def set_fan_speed(service: ServiceDataType) -> None:
         value = service.data.get(ATTR_NAME)

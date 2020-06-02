@@ -1,7 +1,7 @@
 {
-  "domain": "argon_one",
-  "name": "Argon ONE",
-  "documentation": "https://github.com/Misiu/argon_one",
+  "domain": "argon40",
+  "name": "Argon40",
+  "documentation": "https://github.com/Misiu/argon40",
   "dependencies": [],
   "config_flow": false,
   "codeowners": [
