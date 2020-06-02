@@ -4,19 +4,14 @@
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
 
+[![GitHub CRON Workflow Status][cron-build-shield]][cron-build]
+[![GitHub PUSH Workflow Status][push-build-shield]][push-build]
+
 [![hacs][hacsbadge]][hacs]
 ![Project Maintenance][maintenance-shield]
 [![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
 _Component supports:_ [Argon ONE Raspberry Pi 4 Case][argon_one_pi4], [Argon ONE Raspberry Pi 3 Case][argon_one_pi3], [Argon Fan HAT][argon_fan_hat].
-
-**This component will set up the following platforms.**
-
-Platform | Description
--- | --
-`binary_sensor` | Show something `True` or `False`.
-`sensor` | Show info from argon ONE API.
-`switch` | Switch something `True` or `False`.
 
 ![example][exampleimg]
 
@@ -43,6 +38,32 @@ custom_components/argon40/services.yaml
 
 <!---->
 
+#### Config
+
+1. Add CPU Temperature sensor:
+```yaml
+  - platform: command_line
+    name: CPU Temp
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    unit_of_measurement: "°C"
+    value_template: "{{ value | multiply(0.001) | round(1) }}"
+```
+2. Add automation:
+```yaml
+automation:
+  - alias: "Set fan speed"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.cpu_temp
+      above: 50.0
+      for:
+        minutes: 1
+    action:
+      - service: argon40.set_fan_speed
+        data:
+          speed: 40
+```
+
 ## Contributions are welcome!
 
 If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)
@@ -66,5 +87,12 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 
 [license-shield]: https://img.shields.io/github/license/Misiu/argon40.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-%40Misiu-blue.svg?style=for-the-badge
+
 [releases-shield]: https://img.shields.io/github/release/Misiu/argon40.svg?style=for-the-badge
 [releases]: https://github.com/Misiu/argon40/releases
+
+[cron-build-shield]: https://img.shields.io/github/workflow/status/Misiu/argon40/Cron%20actions?label=CRON%20BUILD&logo=github&style=for-the-badge
+[cron-build]: https://github.com/Misiu/argon40/actions?query=workflow%3A%22Cron+actions%22
+
+[push-build-shield]: https://img.shields.io/github/workflow/status/Misiu/argon40/Push%20actions?label=PUSH%20BUILD&logo=github&style=for-the-badge
+[push-build]: https://github.com/Misiu/argon40/actions?query=workflow%3A%22Push+actions%22
