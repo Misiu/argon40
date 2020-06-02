@@ -1,4 +1,4 @@
-# Argon ONE Pi 3 & 4 cases and Argon Fan HAT support for Home Assistant
+# Argon ONE Pi 3 & 4 Cases and Fan HAT support for Home Assistant
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
@@ -8,7 +8,7 @@
 ![Project Maintenance][maintenance-shield]
 [![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
-_Component to integrate with [Argon40][argon_one]._
+_Component supports:_ [Argon ONE Raspberry Pi 4 Case][argon_one_pi4], [Argon ONE Raspberry Pi 3 Case][argon_one_pi3], [Argon Fan HAT][argon_fan_hat].
 
 **This component will set up the following platforms.**
 
@@ -49,7 +49,9 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 
 ***
 
-[argon_one]: https://www.argon40.com/argon-one-raspberry-pi-4-case.html
+[argon_one_pi4]: https://www.argon40.com/argon-one-raspberry-pi-4-case.html
+[argon_one_pi3]: https://www.argon40.com/argon-one-raspberry-pi-3-case.html
+[argon_fan_hat]: https://www.argon40.com/argon-fan-hat-for-raspberry-pi-4-raspberry-pi-3b-and-raspberry-pi-3-b.html
 
 [buymecoffee]: https://www.buymeacoffee.com/Misiu
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
