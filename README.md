@@ -10,14 +10,6 @@
 
 _Component supports:_ [Argon ONE Raspberry Pi 4 Case][argon_one_pi4], [Argon ONE Raspberry Pi 3 Case][argon_one_pi3], [Argon Fan HAT][argon_fan_hat].
 
-**This component will set up the following platforms.**
-
-Platform | Description
--- | --
-`binary_sensor` | Show something `True` or `False`.
-`sensor` | Show info from argon ONE API.
-`switch` | Switch something `True` or `False`.
-
 ![example][exampleimg]
 
 ## Installation
@@ -42,6 +34,32 @@ custom_components/argon40/services.yaml
 ## Configuration is done via configuration.yaml
 
 <!---->
+
+#### Config
+
+1. Add CPU Temperature sensor:
+```yaml
+  - platform: command_line
+    name: CPU Temp
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    unit_of_measurement: "°C"
+    value_template: "{{ value | multiply(0.001) | round(1) }}"
+```
+2. Add automation:
+```yaml
+automation:
+  - alias: "Set fan speed"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.cpu_temp
+      above: 50.0
+      for:
+        minutes: 1
+    action:
+      - service: argon40.set_fan_speed
+        data:
+          speed: 40
+```
 
 ## Contributions are welcome!
 
