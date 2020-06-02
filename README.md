@@ -4,6 +4,9 @@
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
 
+[![GitHub CRON Workflow Status][cron-build-shield]][cron-build]
+[![GitHub PUSH Workflow Status][push-build-shield]][push-build]
+
 [![hacs][hacsbadge]][hacs]
 ![Project Maintenance][maintenance-shield]
 [![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
@@ -84,5 +87,12 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 
 [license-shield]: https://img.shields.io/github/license/Misiu/argon40.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-%40Misiu-blue.svg?style=for-the-badge
+
 [releases-shield]: https://img.shields.io/github/release/Misiu/argon40.svg?style=for-the-badge
 [releases]: https://github.com/Misiu/argon40/releases
+
+[cron-build-shield]: https://img.shields.io/github/workflow/status/Misiu/argon40/Cron%20actions?label=CRON%20BUILD&logo=github&style=for-the-badge
+[cron-build]: https://github.com/Misiu/argon40/actions?query=workflow%3A%22Cron+actions%22
+
+[push-build-shield]: https://img.shields.io/github/workflow/status/Misiu/argon40/Push%20actions?label=PUSH%20BUILD&logo=github&style=for-the-badge
+[push-build]: https://github.com/Misiu/argon40/actions?query=workflow%3A%22Push+actions%22
