@@ -1,5 +1,6 @@
 """Support for Argon 40 cases and Argon Fan HAT"""
 import logging
+from typing import Any
 
 from RPi import GPIO  # pylint: disable=import-error
 from custom_components.argon40.const import (
@@ -9,9 +10,10 @@ from custom_components.argon40.const import (
     STARTUP_MESSAGE,
 )
 from homeassistant.const import EVENT_HOMEASSISTANT_START, EVENT_HOMEASSISTANT_STOP
+from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.typing import ConfigType, HomeAssistantType, ServiceDataType
-import smbus  # pylint: disable=import-error
+from smbus import SMBus
 import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
@@ -29,15 +31,18 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
     try:
         rev = GPIO.RPI_REVISION
         if rev == 2 or rev == 3:
-            bus = smbus.SMBus(1)
+            bus = SMBus(1)
         else:
-            bus = smbus.SMBus(0)
+            bus = SMBus(0)
 
-        def cleanup_gpio(event):
+        @callback
+        def cleanup_gpio(event: Any) -> None:
             """Stuff to do before stopping."""
             GPIO.cleanup()
 
-        def prepare_gpio(event):
+        # not sure if @callback needed
+        @callback
+        def prepare_gpio(event: Any) -> None:
             """Stuff to do when Home Assistant starts."""
             hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, cleanup_gpio)
 
