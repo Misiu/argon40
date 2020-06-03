@@ -23,7 +23,8 @@ _Component supports:_ [Argon ONE Raspberry Pi 4 Case][argon_one_pi4], [Argon ONE
 4. Download _all_ the files from the `custom_components/argon40/` directory (folder) in this repository.
 5. Place the files you downloaded in the new directory (folder) you created.
 6. Restart Home Assistant
-7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Argon40"
+7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Argon40" (not yet supported)
+8. Add `argon40`: to your `configuration.yaml`
 
 Using your HA configuration directory (folder) as a starting point you should now also have this:
 
