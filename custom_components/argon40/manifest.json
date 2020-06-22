@@ -8,7 +8,6 @@
     "@Misiu"
   ],
   "requirements": [
-    "smbus-cffi==0.5.1",
-    "RPi.GPIO==0.7.0"
+    "smbus-cffi==0.5.1"
   ]
 }

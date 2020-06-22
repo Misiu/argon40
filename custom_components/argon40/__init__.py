@@ -2,7 +2,7 @@
 import logging
 from typing import Any
 
-from RPi import GPIO  # pylint: disable=import-error
+# from RPi import GPIO  # pylint: disable=import-error
 from custom_components.argon40.const import (
     ATTR_NAME,
     DOMAIN,
@@ -29,29 +29,29 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
     _LOGGER.info(STARTUP_MESSAGE)
 
     try:
-        rev = GPIO.RPI_REVISION
-        if rev == 2 or rev == 3:
-            bus = SMBus(1)
-        else:
-            bus = SMBus(0)
+        # rev = GPIO.RPI_REVISION
+        # if rev == 2 or rev == 3:
+        bus = SMBus(1)
+        # else:
+        #    bus = SMBus(0)
 
-        @callback
-        def cleanup_gpio(event: Any) -> None:
-            """Stuff to do before stopping."""
-            GPIO.cleanup()
+        # @callback
+        # def cleanup_gpio(event: Any) -> None:
+        #     """Stuff to do before stopping."""
+        #     GPIO.cleanup()
 
-        # not sure if @callback needed
-        @callback
-        def prepare_gpio(event: Any) -> None:
-            """Stuff to do when Home Assistant starts."""
-            hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, cleanup_gpio)
+        # # not sure if @callback needed
+        # @callback
+        # def prepare_gpio(event: Any) -> None:
+        #     """Stuff to do when Home Assistant starts."""
+        #     hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, cleanup_gpio)
 
-        hass.bus.listen_once(EVENT_HOMEASSISTANT_START, prepare_gpio)
+        # hass.bus.listen_once(EVENT_HOMEASSISTANT_START, prepare_gpio)
 
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
-        shutdown_pin = 4
-        GPIO.setup(shutdown_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        # GPIO.setwarnings(False)
+        # GPIO.setmode(GPIO.BCM)
+        # shutdown_pin = 4
+        # GPIO.setup(shutdown_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
         address = 0x1A
         bus.write_byte(address, 10)
@@ -63,7 +63,7 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
             err.strerror,
             address,
         )
-        pass
+        return False
 
     async def set_fan_speed(service: ServiceDataType) -> None:
         value = service.data.get(ATTR_NAME)
