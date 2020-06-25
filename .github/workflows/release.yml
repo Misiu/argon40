@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release_zip_file:
+    name: Prepare release asset
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: ZIP files
+        run: |
+          cd /home/runner/work/argon40/argon40/custom_components/argon40
+          zip argon40.zip -r ./
+
+      - name: Upload zip to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: /home/runner/work/argon40/argon40/custom_components/argon40/argon40.zip
+          asset_name: argon40.zip
+          tag: ${{ github.ref }}
+          overwrite: true
