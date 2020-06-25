@@ -1,7 +1,8 @@
 {
     "name": "Argon40",
-    "hacs": "0.24.0",
-    "render_readme": true,
+    "homeassistant": "0.110.0",
     "iot_class": "Local Polling",
-    "homeassistant": "0.110.0"
+    "render_readme": true,
+    "zip_release": true,
+    "filename": "argon40.zip"
 }
