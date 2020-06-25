@@ -1,11 +1,7 @@
 {
     "name": "Argon40",
     "hacs": "0.24.0",
-    "domains": [
-        "binary_sensor",
-        "sensor",
-        "switch"
-    ],
-    "iot_class": "Cloud Polling",
+    "render_readme": true,
+    "iot_class": "Local Polling",
     "homeassistant": "0.110.0"
 }
