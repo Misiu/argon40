@@ -60,7 +60,7 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
                 #hass.bus.async_fire("argon40_event", {"key": "pressed"})
             else:
                 _LOGGER.debug("Falling edge detected on 4")
-                hass.bus.async_fire("argon40_event", {"action": "double tap"})
+                hass.bus.async_fire("argon40_event", {"action": "double-tap"})
                 
         GPIO.add_event_detect(shutdown_pin, GPIO.BOTH, callback=event_detect_callback)  
 
