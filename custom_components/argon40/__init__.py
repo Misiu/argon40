@@ -2,7 +2,7 @@
 import logging
 from typing import Any
 
-# from RPi import GPIO  # pylint: disable=import-error
+from RPi import GPIO  # pylint: disable=import-error
 from custom_components.argon40.const import (
     ATTR_NAME,
     DOMAIN,
@@ -29,11 +29,11 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
     _LOGGER.info(STARTUP_MESSAGE)
 
     try:
-        # rev = GPIO.RPI_REVISION
-        # if rev == 2 or rev == 3:
-        bus = SMBus(1)
-        # else:
-        #    bus = SMBus(0)
+        rev = GPIO.RPI_REVISION
+        if rev == 2 or rev == 3:
+          bus = SMBus(1)
+        else:
+          bus = SMBus(0)
 
         # @callback
         # def cleanup_gpio(event: Any) -> None:
@@ -48,10 +48,21 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
 
         # hass.bus.listen_once(EVENT_HOMEASSISTANT_START, prepare_gpio)
 
-        # GPIO.setwarnings(False)
-        # GPIO.setmode(GPIO.BCM)
-        # shutdown_pin = 4
-        # GPIO.setup(shutdown_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        shutdown_pin = 4
+        GPIO.setup(shutdown_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+        @callback
+        def event_detect_callback(channel):  
+            if GPIO.input(shutdown_pin):
+                _LOGGER.debug("Rising edge detected on 4")
+                #hass.bus.async_fire("argon40_event", {"key": "pressed"})
+            else:
+                _LOGGER.debug("Falling edge detected on 4")
+                hass.bus.async_fire("argon40_event", {"action": "double tap"})
+                
+        GPIO.add_event_detect(shutdown_pin, GPIO.BOTH, callback=event_detect_callback)  
 
         address = 0x1A
         bus.write_byte(address, 10)
