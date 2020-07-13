@@ -65,6 +65,23 @@ automation:
           speed: 40
 ```
 
+#### Bonus - button double tap detection
+
+```yaml
+automation:
+  - alias: "Argon40 button double tap"
+    trigger:
+      platform: event
+      event_type: argon40_event
+      event_data:
+        action: double tap
+    action:
+      - service: persistent_notification.create
+        data:
+          message: "Argon 40"
+          title: "button was double clicked"
+```
+
 ## Contributions are welcome!
 
 If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)
