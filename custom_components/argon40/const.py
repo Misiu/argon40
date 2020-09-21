@@ -2,7 +2,7 @@
 
 NAME = "Argon40"
 DOMAIN = "argon40"
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 ATTR_SPEED_NAME = "speed"
 SERVICE_SET_FAN_SPEED = "set_fan_speed"
