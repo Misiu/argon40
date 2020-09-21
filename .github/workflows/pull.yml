@@ -17,7 +17,7 @@ jobs:
             CATEGORY: "integration"
 
         - name: Hassfest validation
-          uses: "home-assistant/actions/hassfest@master"
+          uses: "home-assistant/actions/hassfest@main"
 
   style:
     runs-on: "ubuntu-latest"
