@@ -24,7 +24,7 @@ _Component supports:_ [Argon ONE Raspberry Pi 4 Case][argon_one_pi4], [Argon ONE
 5. Place the files you downloaded in the new directory (folder) you created.
 6. Restart Home Assistant
 7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Argon40" (not yet supported)
-8. Add `argon40`: to your `configuration.yaml`
+8. Add `argon40:` to your `configuration.yaml`
 
 Using your HA configuration directory (folder) as a starting point you should now also have this:
 
@@ -43,6 +43,7 @@ custom_components/argon40/services.yaml
 
 1. Add CPU Temperature sensor:
 ```yaml
+sensor:
   - platform: command_line
     name: CPU Temp
     command: "cat /sys/class/thermal/thermal_zone0/temp"
