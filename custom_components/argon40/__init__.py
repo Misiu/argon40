@@ -26,6 +26,8 @@ SERVICE_SET_FAN_SPEED_SCHEMA = vol.Schema(
 
 SERVICE_SET_MODE_SCHEMA = vol.Schema({vol.Required(ATTR_ALWAYS_ON_NAME): cv.boolean})
 
+I2C_ADDRESS = 0x1A
+
 
 async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
     """Set up the Argon40 component."""
@@ -68,22 +70,21 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
 
         GPIO.add_event_detect(shutdown_pin, GPIO.BOTH, callback=event_detect_callback)
 
-        address = 0x1A
-        bus.write_byte(address, 10)
+        bus.write_byte(I2C_ADDRESS, 10)
 
     except IOError as err:
         _LOGGER.exception(
             "Error %d, %s accessing 0x%02X: Check your I2C address",
             err.errno,
             err.strerror,
-            address,
+            I2C_ADDRESS,
         )
         return False
 
     async def set_fan_speed(service: ServiceDataType) -> None:
         value = service.data.get(ATTR_SPEED_NAME)
         _LOGGER.debug("Set fan speed to %s", value)
-        bus.write_byte(address, value)
+        bus.write_byte(I2C_ADDRESS, value)
         hass.bus.async_fire("argon40_event", {"speed": value})
 
     hass.services.async_register(
@@ -97,9 +98,9 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
         value = service.data.get(ATTR_ALWAYS_ON_NAME)
         _LOGGER.debug("Set always on mode to %s", value)
         if value:
-            bus.write_byte(address, 254)  # 0xfe - always on mode
+            bus.write_byte(I2C_ADDRESS, 254)  # 0xfe - always on mode
         else:
-            bus.write_byte(address, 253)  # 0xfd - the default mode
+            bus.write_byte(I2C_ADDRESS, 253)  # 0xfd - the default mode
 
         hass.bus.async_fire("argon40_event", {"always_on": value})
 
