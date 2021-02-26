@@ -3,6 +3,7 @@
   "name": "Argon40",
   "version": "0.0.1",
   "documentation": "https://github.com/Misiu/argon40",
+  "issue_tracker": "https://github.com/Misiu/argon40/issues",
   "dependencies": [],
   "config_flow": false,
   "codeowners": [
