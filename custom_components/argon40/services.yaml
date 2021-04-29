@@ -1,14 +1,29 @@
 # Describes the format for available fan services
 set_fan_speed:
+  name: Speed control
   description: Set the fan speed.
   fields:
     speed:
-      description: Speed
+      name: Speed
+      description: Fan speed.
+      required: true
       example: 50
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+          unit_of_measurement: %
+          mode: slider
 
 set_mode:
-  description: Enable or disable the Always ON mode.
+  name: Always on control
+  description: Enable or disable the Always on mode.
   fields:
     always_on:
-      description: "true to enable Always ON mode, false to set the default"
+      name: Always ON
+      description: true to enable Always on mode, false to set the default behavior
       example: true
+      default: true
+      selector:
+        boolean:
