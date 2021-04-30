@@ -4,10 +4,7 @@
   "version": "0.0.2",
   "documentation": "https://github.com/Misiu/argon40",
   "issue_tracker": "https://github.com/Misiu/argon40/issues",
-  "config_flow": false,
-  "codeowners": [
-    "@Misiu"
-  ],
+  "codeowners": ["@Misiu"],
   "requirements": [
     "RPi.GPIO==0.7.0",
     "smbus-cffi==0.5.1"
