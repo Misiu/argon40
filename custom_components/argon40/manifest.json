@@ -6,7 +6,7 @@
   "issue_tracker": "https://github.com/Misiu/argon40/issues",
   "codeowners": ["@Misiu"],
   "requirements": [
-    "RPi.GPIO==0.7.0",
+    "RPi.GPIO==0.7.1a4",
     "smbus-cffi==0.5.1"
   ],
   "iot_class": "assumed_state"
