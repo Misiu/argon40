@@ -1,17 +1,100 @@
-# Argon ONE Pi 3 & 4 Cases and Fan HAT support for Home Assistant
+# Notice
+
+The component and platforms in this repository are not meant to be used by a
+user, but as a "blueprint" that custom component developers can build
+upon, to make more awesome stuff.
+
+HAVE FUN! 😎
+
+## Why?
+
+This is simple, by having custom_components look (README + structure) the same
+it is easier for developers to help each other and for users to start using them.
+
+If you are a developer and you want to add things to this "blueprint" that you think more
+developers will have use for, please open a PR to add it :)
+
+## What?
+
+This repository contains multiple files, here is a overview:
+
+File | Purpose
+-- | --
+`.devcontainer/*` | Used for development/testing with VSCODE, more info in the readme file in that dir.
+`.github/ISSUE_TEMPLATE/feature_request.md` | Template for Feature Requests
+`.github/ISSUE_TEMPLATE/issue.md` | Template for issues
+`.github/settings.yml` | Probot settings to control the repository settings.
+`.vscode/tasks.json` | Tasks for the devcontainer.
+`custom_components/integration_blueprint/translations/*` | [Translation files.](https://developers.home-assistant.io/docs/internationalization/custom_integration)
+`custom_components/integration_blueprint/__init__.py` | The component file for the integration.
+`custom_components/integration_blueprint/api.py` | This is a sample API client.
+`custom_components/integration_blueprint/binary_sensor.py` | Binary sensor platform for the integration.
+`custom_components/integration_blueprint/config_flow.py` | Config flow file, this adds the UI configuration possibilities.
+`custom_components/integration_blueprint/const.py` | A file to hold shared variables/constants for the entire integration.
+`custom_components/integration_blueprint/manifest.json` | A [manifest file](https://developers.home-assistant.io/docs/en/creating_integration_manifest.html) for Home Assistant.
+`custom_components/integration_blueprint/sensor.py` | Sensor platform for the integration.
+`custom_components/integration_blueprint/switch.py` | Switch sensor platform for the integration.
+`tests/__init__.py` | Makes the `tests` folder a module.
+`tests/conftest.py` | Global [fixtures](https://docs.pytest.org/en/stable/fixture.html) used in tests to [patch](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch) functions.
+`tests/test_api.py` | Tests for `custom_components/integration_blueprint/api.py`.
+`tests/test_config_flow.py` | Tests for `custom_components/integration_blueprint/config_flow.py`.
+`tests/test_init.py` | Tests for `custom_components/integration_blueprint/__init__.py`.
+`tests/test_switch.py` | Tests for `custom_components/integration_blueprint/switch.py`.
+`CONTRIBUTING.md` | Guidelines on how to contribute.
+`example.png` | Screenshot that demonstrate how it might look in the UI.
+`info.md` | An example on a info file (used by [hacs][hacs]).
+`LICENSE` | The license file for the project.
+`README.md` | The file you are reading now, should contain info about the integration, installation and configuration instructions.
+`requirements.txt` | Python packages used by this integration.
+`requirements_dev.txt` | Python packages used to provide [IntelliSense](https://code.visualstudio.com/docs/editor/intellisense)/code hints during development of this integration, typically includes packages in `requirements.txt` but may include additional packages
+`requirements_test.txt` | Python packages required to run the tests for this integration, typically includes packages in `requirements_dev.txt` but may include additional packages
+
+## How?
+
+If you want to use all the potential and features of this blueprint template you
+should use Visual Studio Code to develop in a container. In this container you
+will have all the tools to ease your python development and a dedicated Home
+Assistant core instance to run your integration. See `.devcontainer/README.md` for more information.
+
+If you need to work on the python library in parallel of this integration
+(`sampleclient` in this example) there are different options. The following one seems
+easy to implement:
+
+- Create a dedicated branch for your python library on a public git repository (example: branch
+`dev` on `https://github.com/ludeeus/sampleclient`)
+- Update in the `manifest.json` file the `requirements` key to point on your development branch
+( example: `"requirements": ["git+https://github.com/ludeeus/sampleclient.git@dev#devp==0.0.1beta1"]`)
+- Each time you need to make a modification to your python library, push it to your
+development branch and increase the number of the python library version in `manifest.json` file
+to ensure Home Assistant update the code of the python library. (example `"requirements": ["git+https://...==0.0.1beta2"]`).
+
+
+***
+README content if this was a published component:
+***
+
+# integration_blueprint
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
 
-[![GitHub CRON Workflow Status][cron-build-shield]][cron-build]
-[![GitHub PUSH Workflow Status][push-build-shield]][push-build]
-
 [![hacs][hacsbadge]][hacs]
 ![Project Maintenance][maintenance-shield]
 [![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
-_Component supports:_ [Argon ONE Raspberry Pi 4 Case][argon_one_pi4], [Argon ONE Raspberry Pi 3 Case][argon_one_pi3], [Argon Fan HAT][argon_fan_hat].
+[![Discord][discord-shield]][discord]
+[![Community Forum][forum-shield]][forum]
+
+_Component to integrate with [integration_blueprint][integration_blueprint]._
+
+**This component will set up the following platforms.**
+
+Platform | Description
+-- | --
+`binary_sensor` | Show something `True` or `False`.
+`sensor` | Show info from blueprint API.
+`switch` | Switch something `True` or `False`.
 
 ![example][exampleimg]
 
@@ -19,69 +102,31 @@ _Component supports:_ [Argon ONE Raspberry Pi 4 Case][argon_one_pi4], [Argon ONE
 
 1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
 2. If you do not have a `custom_components` directory (folder) there, you need to create it.
-3. In the `custom_components` directory (folder) create a new folder called `argon40`.
-4. Download _all_ the files from the `custom_components/argon40/` directory (folder) in this repository.
+3. In the `custom_components` directory (folder) create a new folder called `integration_blueprint`.
+4. Download _all_ the files from the `custom_components/integration_blueprint/` directory (folder) in this repository.
 5. Place the files you downloaded in the new directory (folder) you created.
 6. Restart Home Assistant
-7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Argon40" (not yet supported)
-8. Add `argon40:` to your `configuration.yaml`
+7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Blueprint"
 
 Using your HA configuration directory (folder) as a starting point you should now also have this:
 
 ```text
-custom_components/argon40/__init__.py
-custom_components/argon40/const.py
-custom_components/argon40/manifest.json
-custom_components/argon40/services.yaml
+custom_components/integration_blueprint/translations/en.json
+custom_components/integration_blueprint/translations/nb.json
+custom_components/integration_blueprint/translations/sensor.nb.json
+custom_components/integration_blueprint/__init__.py
+custom_components/integration_blueprint/api.py
+custom_components/integration_blueprint/binary_sensor.py
+custom_components/integration_blueprint/config_flow.py
+custom_components/integration_blueprint/const.py
+custom_components/integration_blueprint/manifest.json
+custom_components/integration_blueprint/sensor.py
+custom_components/integration_blueprint/switch.py
 ```
 
-## Configuration is done via configuration.yaml
+## Configuration is done in the UI
 
 <!---->
-
-#### Config
-
-1. Add CPU Temperature sensor:
-```yaml
-sensor:
-  - platform: command_line
-    name: CPU Temp
-    command: "cat /sys/class/thermal/thermal_zone0/temp"
-    unit_of_measurement: "°C"
-    value_template: "{{ value | multiply(0.001) | round(1) }}"
-```
-2. Add automation:
-```yaml
-automation:
-  - alias: "Set fan speed"
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.cpu_temp
-      above: 50.0
-      for:
-        minutes: 1
-    action:
-      - service: argon40.set_fan_speed
-        data:
-          speed: 40
-```
-
-#### Bonus - button double-tap detection
-
-```yaml
-automation:
-  - alias: "Argon40 button double-tap"
-    trigger:
-      platform: event
-      event_type: argon40_event
-      event_data:
-        action: double-tap
-    action:
-      - service: persistent_notification.create
-        data:
-          title: "Argon 40"
-          message: "Button was double-tapped"
-```
 
 ## Contributions are welcome!
 
@@ -89,29 +134,19 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 
 ***
 
-[argon_one_pi4]: https://www.argon40.com/argon-one-raspberry-pi-4-case.html
-[argon_one_pi3]: https://www.argon40.com/argon-one-raspberry-pi-3-case.html
-[argon_fan_hat]: https://www.argon40.com/argon-fan-hat-for-raspberry-pi-4-raspberry-pi-3b-and-raspberry-pi-3-b.html
-
-[buymecoffee]: https://www.buymeacoffee.com/Misiu
+[integration_blueprint]: https://github.com/custom-components/integration_blueprint
+[buymecoffee]: https://www.buymeacoffee.com/ludeeus
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
-
-[commits]: https://github.com/Misiu/argon40/commits/master
-[commits-shield]: https://img.shields.io/github/commit-activity/y/Misiu/argon40.svg?style=for-the-badge
-
+[commits-shield]: https://img.shields.io/github/commit-activity/y/custom-components/blueprint.svg?style=for-the-badge
+[commits]: https://github.com/custom-components/integration_blueprint/commits/master
 [hacs]: https://github.com/custom-components/hacs
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
-
+[discord]: https://discord.gg/Qa5fW2R
+[discord-shield]: https://img.shields.io/discord/330944238910963714.svg?style=for-the-badge
 [exampleimg]: example.png
-
-[license-shield]: https://img.shields.io/github/license/Misiu/argon40.svg?style=for-the-badge
-[maintenance-shield]: https://img.shields.io/badge/maintainer-%40Misiu-blue.svg?style=for-the-badge
-
-[releases-shield]: https://img.shields.io/github/release/Misiu/argon40.svg?style=for-the-badge
-[releases]: https://github.com/Misiu/argon40/releases
-
-[cron-build-shield]: https://img.shields.io/github/workflow/status/Misiu/argon40/Cron%20actions?label=CRON%20BUILD&logo=github&style=for-the-badge
-[cron-build]: https://github.com/Misiu/argon40/actions?query=workflow%3A%22Cron+actions%22
-
-[push-build-shield]: https://img.shields.io/github/workflow/status/Misiu/argon40/Push%20actions?label=PUSH%20BUILD&logo=github&style=for-the-badge
-[push-build]: https://github.com/Misiu/argon40/actions?query=workflow%3A%22Push+actions%22
+[forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
+[forum]: https://community.home-assistant.io/
+[license-shield]: https://img.shields.io/github/license/custom-components/blueprint.svg?style=for-the-badge
+[maintenance-shield]: https://img.shields.io/badge/maintainer-Joakim%20Sørensen%20%40ludeeus-blue.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/release/custom-components/blueprint.svg?style=for-the-badge
+[releases]: https://github.com/custom-components/integration_blueprint/releases
