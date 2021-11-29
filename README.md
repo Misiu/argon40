@@ -17,14 +17,16 @@ _Component supports:_ [Argon ONE Raspberry Pi 4 Case][argon_one_pi4], [Argon ONE
 
 ## Installation
 
-1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
-2. If you do not have a `custom_components` directory (folder) there, you need to create it.
-3. In the `custom_components` directory (folder) create a new folder called `argon40`.
-4. Download _all_ the files from the `custom_components/argon40/` directory (folder) in this repository.
-5. Place the files you downloaded in the new directory (folder) you created.
-6. Restart Home Assistant
-7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Argon40" (not yet supported)
+1. Enable I2C. This is the most important step. Disabled I2C prevents the integraion from running and shows an error in logs.
+   * [Official way](https://www.home-assistant.io/common-tasks/os#enable-i2c-via-home-assistant-operating-system-terminal)
+   * [Using Add-on HassOS I2C Configurator](https://community.home-assistant.io/t/add-on-hassos-i2c-configurator/264167) (the easiest way)
+3. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
+4. If you do not have a `custom_components` directory (folder) there, you need to create it.
+5. In the `custom_components` directory (folder) create a new folder called `argon40`.
+6. Download _all_ the files from the `custom_components/argon40/` directory (folder) in this repository.
+7. Place the files you downloaded in the new directory (folder) you created.
 8. Add `argon40:` to your `configuration.yaml`
+9. Restart Home Assistant
 
 Using your HA configuration directory (folder) as a starting point you should now also have this:
 
