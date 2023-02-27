@@ -114,7 +114,7 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 [releases]: https://github.com/Misiu/argon40/releases
 
 [cron-build-shield]: https://img.shields.io/github/actions/workflow/status/Misiu/argon40/cron.yml?label=CRON&style=for-the-badge
-[cron-build]: https://github.com/Misiu/argon40/actions?query=workflow%3A%22Cron+actions%22
+[cron-build]: https://github.com/Misiu/argon40/actions/workflows/cron.yml
 
 [push-build-shield]: https://img.shields.io/github/actions/workflow/status/Misiu/argon40/pull_and_push.yml?label=PULL%20%26%20PUSH&style=for-the-badge
-[push-build]: https://github.com/Misiu/argon40/actions?query=workflow%3A%22Push+actions%22
+[push-build]: https://github.com/Misiu/argon40/actions/workflows/pull_and_push.yml
