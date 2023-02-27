@@ -113,8 +113,8 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 [releases-shield]: https://img.shields.io/github/release/Misiu/argon40.svg?style=for-the-badge
 [releases]: https://github.com/Misiu/argon40/releases
 
-[cron-build-shield]: https://img.shields.io/github/workflow/status/Misiu/argon40/Cron%20actions?label=CRON%20BUILD&logo=github&style=for-the-badge
+[cron-build-shield]: https://img.shields.io/github/actions/workflow/status/Misiu/argon40/cron.yml?label=CRON&style=for-the-badge
 [cron-build]: https://github.com/Misiu/argon40/actions?query=workflow%3A%22Cron+actions%22
 
-[push-build-shield]: https://img.shields.io/github/workflow/status/Misiu/argon40/Push%20actions?label=PUSH%20BUILD&logo=github&style=for-the-badge
+[push-build-shield]: https://img.shields.io/github/actions/workflow/status/Misiu/argon40/pull_and_push.yml?label=PULL%20%26%20PUSH&style=for-the-badge
 [push-build]: https://github.com/Misiu/argon40/actions?query=workflow%3A%22Push+actions%22
