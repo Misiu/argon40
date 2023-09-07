@@ -4,7 +4,8 @@ set_fan_speed:
   description: Set the fan speed.
   fields:
     speed:
-      description: Speed
+      name: Speed
+      description: Target speed on the fan
       required: true
       example: 50
       selector:
@@ -18,7 +19,8 @@ set_mode:
   description: Enable or disable the Always ON mode.
   fields:
     always_on:
-      description: "true to enable Always ON mode, false to set the default"
+      name: Always on
+      description: true to enable Always ON mode, false to set the default
       required: true
       example: true
       selector:
