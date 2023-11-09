@@ -56,17 +56,150 @@ sensor:
 2. Add automation:
 ```yaml
 automation:
-  - alias: "Set fan speed"
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.cpu_temp
-      above: 50.0
-      for:
-        minutes: 1
-    action:
+alias: Set CPU Fan Speed
+description: Adjust fan speed based on CPU temperature
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: numeric_state
+    entity_id: sensor.processor_temperature
+    below: "35"
+  - platform: numeric_state
+    entity_id: sensor.processor_temperature
+    above: "35"
+  - platform: numeric_state
+    entity_id: sensor.processor_temperature
+    above: "45"
+  - platform: numeric_state
+    entity_id: sensor.processor_temperature
+    above: "50"
+  - platform: numeric_state
+    entity_id: sensor.processor_temperature
+    above: "55"
+  - platform: numeric_state
+    entity_id: sensor.processor_temperature
+    above: "60"
+  - platform: numeric_state
+    entity_id: sensor.processor_temperature
+    above: "65"
+  - platform: numeric_state
+    entity_id: sensor.processor_temperature
+    above: "70"
+action:
+  - choose:
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.processor_temperature
+            above: "70"
+        sequence:
+          - service: argon40.set_fan_speed
+            data:
+              speed: 100
+          - service: input_number.set_value
+            data:
+              value: 100
+            target:
+              entity_id: input_number.current_fanspeed
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.processor_temperature
+            above: "65"
+        sequence:
+          - service: argon40.set_fan_speed
+            data:
+              speed: 75
+          - service: input_number.set_value
+            data:
+              value: 75
+            target:
+              entity_id: input_number.current_fanspeed
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.processor_temperature
+            above: "60"
+        sequence:
+          - service: argon40.set_fan_speed
+            data:
+              speed: 50
+          - service: input_number.set_value
+            data:
+              value: 50
+            target:
+              entity_id: input_number.current_fanspeed
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.processor_temperature
+            above: "55"
+        sequence:
+          - service: argon40.set_fan_speed
+            data:
+              speed: 40
+          - service: input_number.set_value
+            data:
+              value: 40
+            target:
+              entity_id: input_number.current_fanspeed
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.processor_temperature
+            above: "50"
+        sequence:
+          - service: argon40.set_fan_speed
+            data:
+              speed: 30
+          - service: input_number.set_value
+            data:
+              value: 30
+            target:
+              entity_id: input_number.current_fanspeed
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.processor_temperature
+            above: "45"
+        sequence:
+          - service: argon40.set_fan_speed
+            data:
+              speed: 20
+          - service: input_number.set_value
+            data:
+              value: 20
+            target:
+              entity_id: input_number.current_fanspeed
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.processor_temperature
+            above: "35"
+        sequence:
+          - service: argon40.set_fan_speed
+            data:
+              speed: 10
+          - service: input_number.set_value
+            data:
+              value: 10
+            target:
+              entity_id: input_number.current_fanspeed
+      - conditions:
+          - condition: numeric_state
+            entity_id: sensor.processor_temperature
+            below: "35"
+        sequence:
+          - service: argon40.set_fan_speed
+            data:
+              speed: 2
+          - service: input_number.set_value
+            data:
+              value: 2
+            target:
+              entity_id: input_number.current_fanspeed
+    default:
       - service: argon40.set_fan_speed
         data:
-          speed: 40
+          speed: 0
+      - service: input_number.set_value
+        data:
+          value: 0
+        target:
+          entity_id: input_number.current_fanspeed
 ```
 
 #### Bonus - button double-tap detection
