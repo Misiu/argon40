@@ -3,17 +3,15 @@ import logging
 from typing import Any
 
 from custom_components.argon40.const import (
-    ATTR_ALWAYS_ON_NAME,
     ATTR_SPEED_NAME,
     DOMAIN,
     SERVICE_SET_FAN_SPEED,
-    SERVICE_SET_MODE,
     STARTUP_MESSAGE,
 )
-from homeassistant.const import EVENT_HOMEASSISTANT_START, EVENT_HOMEASSISTANT_STOP
-from homeassistant.core import callback, HomeAssistant
+
+from homeassistant.core import HomeAssistant, ServiceCall
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.typing import ConfigType, ServiceDataType
+from homeassistant.helpers.typing import ConfigType
 from smbus2 import SMBus
 import voluptuous as vol
 
@@ -29,6 +27,9 @@ ARGONONE_FAN_ADDRESS=0x1a
 #ArgonOne Reg Addresses
 ADDR_ARGONONEREG_DUTYCYCLE=0x80
 
+
+CONFIG_SCHEMA = cv.empty_config_schema(DOMAIN)
+
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Argon40 component."""
 
@@ -37,7 +38,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     try:
         bus = SMBus(1)
         
-        bus.write_byte_data(ARGONONE_FAN_ADDRESS, ADDR_ARGONONEREG_DUTYCYCLE, 10)
+        bus.write_byte_data(ARGONONE_FAN_ADDRESS, ADDR_ARGONONEREG_DUTYCYCLE, 30)
 
         # Run check support function on startup
         if argonregister_checksupport(bus):
@@ -54,7 +55,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         )
         return False
 
-    async def set_fan_speed(service: ServiceDataType) -> None:
+    async def set_fan_speed(service: ServiceCall) -> None:
         value = service.data.get(ATTR_SPEED_NAME)
         _LOGGER.error("Set fan speed to %s", value)
         bus.write_byte_data(ARGONONE_FAN_ADDRESS, ADDR_ARGONONEREG_DUTYCYCLE, value)
