@@ -46,13 +46,15 @@ custom_components/argon40/services.yaml
 
 1. Add CPU Temperature sensor:
 ```yaml
-sensor:
-  - platform: command_line
-    name: CPU Temp
-    command: "cat /sys/class/thermal/thermal_zone0/temp"
-    unit_of_measurement: "°C"
-    value_template: "{{ value | multiply(0.001) | round(1) }}"
+command_line:
+  - sensor:
+      name: CPU Temp
+      unique_id: cpu_temp
+      command: "cat /sys/class/thermal/thermal_zone0/temp"
+      unit_of_measurement: "°C"
+      value_template: "{{ value | multiply(0.001) | round(1) }}"
 ```
+Or use [System monitor](https://www.home-assistant.io/integrations/systemmonitor/#processor-temperature) integration to get the CPU temperature
 2. Add automation:
 ```yaml
 automation:
