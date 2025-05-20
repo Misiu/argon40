@@ -59,16 +59,16 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         shutdown_pin = 4
         GPIO.setup(shutdown_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-        #@callback
-        #def event_detect_callback(channel):
-        #    if GPIO.input(shutdown_pin):
-        #        _LOGGER.debug("Rising edge detected on 4")
-        #        # hass.bus.async_fire("argon40_event", {"key": "pressed"})
-        #    else:
-        #        _LOGGER.debug("Falling edge detected on 4")
-        #        hass.bus.async_fire("argon40_event", {"action": "double-tap"})
+        # @callback
+        # def event_detect_callback(channel):
+        #     if GPIO.input(shutdown_pin):
+        #         _LOGGER.debug("Rising edge detected on 4")
+        #         # hass.bus.async_fire("argon40_event", {"key": "pressed"})
+        #     else:
+        #         _LOGGER.debug("Falling edge detected on 4")
+        #         hass.bus.async_fire("argon40_event", {"action": "double-tap"})
 
-        #GPIO.add_event_detect(shutdown_pin, GPIO.BOTH, callback=event_detect_callback)
+        # GPIO.add_event_detect(shutdown_pin, GPIO.BOTH, callback=event_detect_callback)
 
         bus.write_byte(I2C_ADDRESS, 10)
 
