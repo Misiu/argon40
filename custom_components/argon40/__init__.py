@@ -12,9 +12,9 @@ from custom_components.argon40.const import (
     STARTUP_MESSAGE,
 )
 from homeassistant.const import EVENT_HOMEASSISTANT_START, EVENT_HOMEASSISTANT_STOP
-from homeassistant.core import callback
+from homeassistant.core import callback, HomeAssistant, ServiceCall
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType, ServiceDataType
+from homeassistant.helpers.typing import ConfigType
 from smbus import SMBus
 import voluptuous as vol
 
@@ -29,7 +29,7 @@ SERVICE_SET_MODE_SCHEMA = vol.Schema({vol.Required(ATTR_ALWAYS_ON_NAME): cv.bool
 I2C_ADDRESS = 0x1A
 
 
-async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Argon40 component."""
 
     _LOGGER.info(STARTUP_MESSAGE)
@@ -59,16 +59,16 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
         shutdown_pin = 4
         GPIO.setup(shutdown_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-        @callback
-        def event_detect_callback(channel):
-            if GPIO.input(shutdown_pin):
-                _LOGGER.debug("Rising edge detected on 4")
-                # hass.bus.async_fire("argon40_event", {"key": "pressed"})
-            else:
-                _LOGGER.debug("Falling edge detected on 4")
-                hass.bus.async_fire("argon40_event", {"action": "double-tap"})
+        # @callback
+        # def event_detect_callback(channel):
+        #     if GPIO.input(shutdown_pin):
+        #         _LOGGER.debug("Rising edge detected on 4")
+        #         # hass.bus.async_fire("argon40_event", {"key": "pressed"})
+        #     else:
+        #         _LOGGER.debug("Falling edge detected on 4")
+        #         hass.bus.async_fire("argon40_event", {"action": "double-tap"})
 
-        GPIO.add_event_detect(shutdown_pin, GPIO.BOTH, callback=event_detect_callback)
+        # GPIO.add_event_detect(shutdown_pin, GPIO.BOTH, callback=event_detect_callback)
 
         bus.write_byte(I2C_ADDRESS, 10)
 
@@ -81,7 +81,7 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
         )
         return False
 
-    async def set_fan_speed(service: ServiceDataType) -> None:
+    async def set_fan_speed(service: ServiceCall) -> None:
         value = service.data.get(ATTR_SPEED_NAME)
         _LOGGER.debug("Set fan speed to %s", value)
         bus.write_byte(I2C_ADDRESS, value)
@@ -94,7 +94,7 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
         schema=SERVICE_SET_FAN_SPEED_SCHEMA,
     )
 
-    async def set_mode(service: ServiceDataType) -> None:
+    async def set_mode(service: ServiceCall) -> None:
         value = service.data.get(ATTR_ALWAYS_ON_NAME)
         _LOGGER.debug("Set always on mode to %s", value)
         if value:
