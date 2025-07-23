@@ -1,7 +1,6 @@
 {
     "name": "Argon40",
-    "homeassistant": "0.110.0",
-    "render_readme": true,
+    "homeassistant": "2025.1",
     "zip_release": true,
     "filename": "argon40.zip"
 }

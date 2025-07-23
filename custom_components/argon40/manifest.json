@@ -9,5 +9,5 @@
     "RPi.GPIO==0.7.1",
     "smbus-cffi==0.5.1"
   ],
-  "version": "0.0.5"
+  "version": "0.0.6"
 }
