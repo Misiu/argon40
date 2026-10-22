@@ -1,1 +1,8 @@
 __pycache__
+.venv/
+.venv-ha-dev/
+.ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/

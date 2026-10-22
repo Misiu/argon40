@@ -1,0 +1,52 @@
+name: Tests (Home Assistant)
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Pytest against Home Assistant ${{ matrix.ha }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ha: stable
+            python: "3.14"
+            group: test
+          - ha: "2026.7.0 (minimum)"
+            python: "3.14"
+            group: test-min
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: ${{ matrix.python }}
+          enable-cache: true
+      - name: Install locked test dependencies
+        run: uv sync --frozen --group "${TEST_GROUP}"
+        env:
+          TEST_GROUP: ${{ matrix.group }}
+      - name: Show Home Assistant version
+        run: uv run --no-sync python -c 'from homeassistant.const import __version__; print(__version__)'
+      - name: Run integration tests
+        run: uv run --no-sync python -m pytest
+      - name: Run Pylint
+        if: matrix.group == 'test'
+        run: uv run --no-sync prek run pylint --all-files --hook-stage manual

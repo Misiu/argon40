@@ -4,39 +4,72 @@ on:
   pull_request:
   push:
     branches:
-      - master
-      - dev
-    paths-ignore:
-    - '.github/workflows/**'
+      - main
+      - develop
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
-    runs-on: "ubuntu-latest"
-    name: Validate
+    runs-on: ubuntu-latest
+    name: Validate integration
     steps:
-        - uses: "actions/checkout@v4.2.2"
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Validate HACS
+        uses: hacs/action@1ebf01c408f29afcb6406bd431bc98fd8cbb15aa # main
+        with:
+          category: integration
+      - name: Validate hassfest
+        uses: home-assistant/actions/hassfest@cd6f3635a740c84d8a14f6121a90068b8ece6bf6 # master
 
-        - name: HACS Action
-          uses: "hacs/action@main"
-          with:
-            category: "integration"
-
-        - name: Hassfest validation
-          uses: "home-assistant/actions/hassfest@master"
-
-  style:
-    runs-on: "ubuntu-latest"
-    strategy:
-      matrix:
-        python-version:
-          - "3.9"
-          - "3.10"
-          - "3.11"
-    name: Check style formatting
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint and formatting
     steps:
-        - uses: "actions/checkout@v4.2.2"
-        - uses: "actions/setup-python@v5.6.0"
-          with:
-            python-version: "3.x"
-        - run: python3 -m pip install black
-        - run: black .
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: "3.14"
+          enable-cache: true
+      - name: Check lockfile
+        run: uv lock --check
+      - name: Install development tools
+        run: uv sync --frozen --dev
+      - name: Run Ruff linter
+        run: uv run --frozen ruff check --output-format=github .
+      - name: Check Ruff formatting
+        run: uv run --frozen ruff format --check .
+      - name: Run repository hooks
+        run: uv run --frozen prek run --all-files --show-diff-on-failure
+        env:
+          PREK_SKIP: ruff-check,ruff-format,no-commit-to-branch
+
+  syntax:
+    runs-on: ubuntu-latest
+    name: Python syntax (3.14)
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: "3.14"
+          enable-cache: false
+      - name: Check integration syntax
+        run: uv run --no-project python -m compileall -q custom_components/argon40

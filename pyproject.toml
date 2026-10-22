@@ -1,0 +1,84 @@
+[project]
+name = "argon40"
+version = "0.0.0"
+description = "Development tools for the Argon40 Home Assistant integration"
+requires-python = ">=3.14.2"
+
+[dependency-groups]
+dev = [
+  "pre-commit-hooks==6.0.0",
+  "prek==0.5.7",
+  "pylint==4.1.3",
+  "ruff==0.17.1",
+  "zizmor==1.31.1",
+]
+test = [
+  "pytest-homeassistant-custom-component==0.13.373",
+]
+test-min = [
+  "pytest-homeassistant-custom-component==0.13.344",
+]
+
+[tool.uv]
+package = false
+required-version = "==0.13.5"
+conflicts = [[{ group = "test" }, { group = "test-min" }]]
+
+[tool.pylint.messages_control]
+disable = [
+  "abstract-method",
+  "format",
+  "unexpected-keyword-arg",
+  "used-before-assignment",
+]
+
+[tool.pylint.similarities]
+ignore-imports = true
+ignore-signatures = true
+min-similarity-lines = 12
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "--strict-markers --cov=custom_components.argon40 --cov-branch --cov-report=term-missing"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "PLR2004"]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 88
+src = ["custom_components/argon40"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "ANN401", # Home Assistant service data can contain arbitrary values.
+  "CPY001", # The repository has a shared LICENSE file.
+  "D203", # Conflicts with D211.
+  "D213", # Conflicts with D212.
+  "SIM108", # Keep hardware bus selection as an explicit branch, as in HA Core.
+  "TC006", # Runtime type casts do not require quoted types.
+  "TID252", # Relative imports are conventional within HA integrations.
+  # Rules that conflict with the formatter.
+  "COM812",
+  "COM819",
+  "D206",
+  "E501",
+  "ISC001",
+  "Q000",
+  "Q001",
+  "Q002",
+  "Q003",
+  "W191",
+]
+
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
+"homeassistant.helpers.config_validation" = "cv"
+voluptuous = "vol"
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["homeassistant"]
+combine-as-imports = true
