@@ -2,7 +2,7 @@
 name = "argon40"
 version = "0.0.0"
 description = "Development tools for the Argon40 Home Assistant integration"
-requires-python = ">=3.12"
+requires-python = ">=3.14.2"
 
 [dependency-groups]
 dev = [
@@ -16,17 +16,13 @@ test = [
   "pytest-homeassistant-custom-component==0.13.373",
 ]
 test-min = [
-  "pytest-homeassistant-custom-component==0.13.201",
+  "pytest-homeassistant-custom-component==0.13.344",
 ]
 
 [tool.uv]
 package = false
 required-version = "==0.13.5"
 conflicts = [[{ group = "test" }, { group = "test-min" }]]
-
-[tool.uv.dependency-groups]
-test = { requires-python = ">=3.14.2" }
-test-min = { requires-python = ">=3.12,<3.13" }
 
 [tool.pylint.messages_control]
 disable = [
@@ -51,7 +47,7 @@ addopts = "--strict-markers --cov=custom_components.argon40 --cov-branch --cov-r
 "tests/**/*.py" = ["S101", "PLR2004"]
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py314"
 line-length = 88
 src = ["custom_components/argon40"]
 

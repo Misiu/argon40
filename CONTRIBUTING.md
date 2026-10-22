@@ -74,8 +74,8 @@ Commit `uv.lock` with dependency changes. Renovate maintains development tool
 versions, the lockfile, and GitHub Actions pinned to full commit SHAs. Keep the
 version or branch comment next to each action SHA so updates remain readable.
 
-Ruff targets Python 3.12 because the integration supports Home Assistant 2025.1
-and newer. CI also checks syntax on Python 3.13 and 3.14. These checks do not
+Ruff and CI target Python 3.14 because the integration supports Home Assistant
+2026.7.0 and newer, which requires Python 3.14.2 or newer. These checks do not
 replace testing against Home Assistant or testing the hardware on a Raspberry Pi.
 Runtime dependencies remain in `custom_components/argon40/manifest.json`; the uv
 default environment contains development tools without Home Assistant or the
@@ -98,11 +98,11 @@ requirements is skipped. Real Raspberry Pi testing is still required before
 claiming hardware compatibility.
 
 The test workflow runs on pull requests and pushes to `main` and `develop`.
-It also tests the declared minimum, Home Assistant 2025.1.0, on Python 3.12:
+It also tests the declared minimum, Home Assistant 2026.7.0, on Python 3.14:
 
 ```shell
-UV_PROJECT_ENVIRONMENT=.venv-ha-min uv sync --frozen --group test-min --python 3.12
-UV_PROJECT_ENVIRONMENT=.venv-ha-min uv run --no-sync --python 3.12 python -m pytest
+UV_PROJECT_ENVIRONMENT=.venv-ha-min uv sync --frozen --group test-min --python 3.14
+UV_PROJECT_ENVIRONMENT=.venv-ha-min uv run --no-sync python -m pytest
 ```
 
 Renovate updates the stable test harness and its matching HA release. The minimum

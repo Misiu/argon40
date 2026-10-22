@@ -22,7 +22,7 @@
     {
       "description": "Keep the test harness for the declared minimum Home Assistant release",
       "matchPackageNames": ["pytest-homeassistant-custom-component"],
-      "matchCurrentVersion": "0.13.201",
+      "matchCurrentVersion": "0.13.344",
       "enabled": false
     },
     {

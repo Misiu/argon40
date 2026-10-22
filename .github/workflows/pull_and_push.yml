@@ -60,12 +60,7 @@ jobs:
 
   syntax:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        # Cover Python versions used by Home Assistant since our minimum 2025.1.
-        python-version: ["3.12", "3.13", "3.14"]
-    name: Python syntax (${{ matrix.python-version }})
+    name: Python syntax (3.14)
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -74,7 +69,7 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.14"
           enable-cache: false
       - name: Check integration syntax
         run: uv run --no-project python -m compileall -q custom_components/argon40

@@ -1,15 +1,14 @@
 """Support for Argon 40 cases and Argon Fan HAT."""
 
 import logging
+from typing import TYPE_CHECKING
 
 # Hardware libraries are installed by Home Assistant on the Raspberry Pi.
 from RPi import GPIO  # pylint: disable=import-error
 from smbus import SMBus  # pylint: disable=import-error
 import voluptuous as vol
 
-from homeassistant.core import HomeAssistant, ServiceCall
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.typing import ConfigType
 from homeassistant.loader import async_get_integration
 
 from .const import (
@@ -20,6 +19,10 @@ from .const import (
     SERVICE_SET_MODE,
     STARTUP_MESSAGE,
 )
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant, ServiceCall
+    from homeassistant.helpers.typing import ConfigType
 
 _LOGGER = logging.getLogger(__name__)
 

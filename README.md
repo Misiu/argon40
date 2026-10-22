@@ -18,9 +18,9 @@ _Component supports:_ [Argon ONE Raspberry Pi 4 Case][argon_one_pi4], [Argon ONE
 
 ## Requirements and installation
 
-Requires Home Assistant 2025.1 or newer and direct access to the Raspberry Pi's
+Requires Home Assistant 2026.7.0 or newer and direct access to the Raspberry Pi's
 GPIO and I2C hardware. Enable I2C before installing the integration; see the
-[Home Assistant OS instructions](https://www.home-assistant.io/common-tasks/os#enable-i2c-via-home-assistant-operating-system-terminal).
+[community guide for the HassOS I2C Configurator add-on](https://community.home-assistant.io/t/add-on-hassos-i2c-configurator/264167).
 
 Add `Misiu/argon40` as a custom repository in HACS (category: Integration), then
 install Argon40. Alternatively, copy the entire `custom_components/argon40`

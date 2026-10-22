@@ -1,6 +1,6 @@
 {
     "name": "Argon40",
-    "homeassistant": "2025.1",
+    "homeassistant": "2026.7.0",
     "zip_release": true,
     "filename": "argon40.zip"
 }

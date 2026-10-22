@@ -26,8 +26,8 @@ jobs:
           - ha: stable
             python: "3.14"
             group: test
-          - ha: "2025.1.0 (minimum)"
-            python: "3.12"
+          - ha: "2026.7.0 (minimum)"
+            python: "3.14"
             group: test-min
     steps:
       - name: Check out repository
