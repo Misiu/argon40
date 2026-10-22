@@ -1,0 +1,54 @@
+[project]
+name = "argon40"
+version = "0.0.0"
+description = "Development tools for the Argon40 Home Assistant integration"
+requires-python = ">=3.12"
+
+[dependency-groups]
+dev = [
+  "pre-commit-hooks==6.0.0",
+  "prek==0.5.7",
+  "ruff==0.17.1",
+  "zizmor==1.31.1",
+]
+
+[tool.uv]
+package = false
+required-version = "==0.13.5"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+src = ["custom_components/argon40"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "ANN401", # Home Assistant service data can contain arbitrary values.
+  "CPY001", # The repository has a shared LICENSE file.
+  "D203", # Conflicts with D211.
+  "D213", # Conflicts with D212.
+  "SIM108", # Keep hardware bus selection as an explicit branch, as in HA Core.
+  "TC006", # Runtime type casts do not require quoted types.
+  "TID252", # Relative imports are conventional within HA integrations.
+  # Rules that conflict with the formatter.
+  "COM812",
+  "COM819",
+  "D206",
+  "E501",
+  "ISC001",
+  "Q000",
+  "Q001",
+  "Q002",
+  "Q003",
+  "W191",
+]
+
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
+"homeassistant.helpers.config_validation" = "cv"
+voluptuous = "vol"
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["homeassistant"]
+combine-as-imports = true

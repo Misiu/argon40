@@ -4,23 +4,28 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 jobs:
   release_zip_file:
     name: Prepare release asset
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v7.0.1
-      
-      - name: ZIP files
-        run: |
-          cd /home/runner/work/argon40/argon40/custom_components/argon40
-          zip argon40.zip -r ./
-
-      - name: Upload zip to release
-        uses: svenstaro/upload-release-action@2.11.5
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Create integration archive
+        working-directory: custom_components/argon40
+        run: zip -r "${RUNNER_TEMP}/argon40.zip" . -x '*/__pycache__/*' '*.pyc'
+      - name: Upload archive to release
+        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # 2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: /home/runner/work/argon40/argon40/custom_components/argon40/argon40.zip
+          file: ${{ runner.temp }}/argon40.zip
           asset_name: argon40.zip
           tag: ${{ github.ref }}
           overwrite: true

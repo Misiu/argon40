@@ -1,0 +1,60 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: Ruff linter
+        language: system
+        types: [python]
+        entry: uv run --frozen ruff check --fix
+        require_serial: true
+      - id: ruff-format
+        name: Ruff formatter
+        language: system
+        types: [python]
+        entry: uv run --frozen ruff format
+        require_serial: true
+      - id: check-json
+        name: Check JSON
+        language: system
+        types: [json]
+        entry: uv run --frozen check-json
+      - id: check-toml
+        name: Check TOML
+        language: system
+        types: [toml]
+        entry: uv run --frozen check-toml
+      - id: check-yaml
+        name: Check YAML
+        language: system
+        types: [yaml]
+        entry: uv run --frozen check-yaml
+        exclude: ^\.devcontainer/configuration\.yaml$
+      - id: check-home-assistant-yaml
+        name: Check Home Assistant YAML syntax
+        language: system
+        types: [yaml]
+        files: ^\.devcontainer/configuration\.yaml$
+        # HA uses custom tags such as !include; parse them without constructing objects.
+        entry: uv run --frozen check-yaml --unsafe
+      - id: check-merge-conflict
+        name: Check merge conflicts
+        language: system
+        types: [text]
+        entry: uv run --frozen check-merge-conflict
+      - id: check-symlinks
+        name: Check symlinks
+        language: system
+        types: [symlink]
+        entry: uv run --frozen check-symlinks
+      - id: zizmor
+        name: Check GitHub Actions
+        language: system
+        types: [yaml]
+        files: ^\.github/workflows/
+        entry: uv run --frozen zizmor --min-severity low
+      - id: no-commit-to-branch
+        name: Protect main branch
+        language: system
+        entry: uv run --frozen no-commit-to-branch --branch main
+        pass_filenames: false
+        always_run: true

@@ -1,9 +1,16 @@
-"""Support for Argon 40 cases and Argon Fan HAT"""
-import logging
-from typing import Any
+"""Support for Argon 40 cases and Argon Fan HAT."""
 
-from RPi import GPIO  # pylint: disable=import-error
-from custom_components.argon40.const import (
+import logging
+
+from RPi import GPIO
+from smbus import SMBus
+import voluptuous as vol
+
+from homeassistant.core import HomeAssistant, ServiceCall
+import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.typing import ConfigType
+
+from .const import (
     ATTR_ALWAYS_ON_NAME,
     ATTR_SPEED_NAME,
     DOMAIN,
@@ -11,12 +18,6 @@ from custom_components.argon40.const import (
     SERVICE_SET_MODE,
     STARTUP_MESSAGE,
 )
-from homeassistant.const import EVENT_HOMEASSISTANT_START, EVENT_HOMEASSISTANT_STOP
-from homeassistant.core import callback, HomeAssistant, ServiceCall
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.typing import ConfigType
-from smbus import SMBus
-import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,50 +30,25 @@ SERVICE_SET_MODE_SCHEMA = vol.Schema({vol.Required(ATTR_ALWAYS_ON_NAME): cv.bool
 I2C_ADDRESS = 0x1A
 
 
-async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:  # noqa: ARG001 - HA setup signature
     """Set up the Argon40 component."""
-
     _LOGGER.info(STARTUP_MESSAGE)
 
     try:
         rev = GPIO.RPI_REVISION
-        if rev == 2 or rev == 3:
+        if rev in (2, 3):
             bus = SMBus(1)
         else:
             bus = SMBus(0)
 
-        # @callback
-        # def cleanup_gpio(event: Any) -> None:
-        #     """Stuff to do before stopping."""
-        #     GPIO.cleanup()
-
-        # # not sure if @callback needed
-        # @callback
-        # def prepare_gpio(event: Any) -> None:
-        #     """Stuff to do when Home Assistant starts."""
-        #     hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, cleanup_gpio)
-
-        # hass.bus.listen_once(EVENT_HOMEASSISTANT_START, prepare_gpio)
-
-        GPIO.setwarnings(False)
+        GPIO.setwarnings(False)  # noqa: FBT003 - RPi.GPIO's external API
         GPIO.setmode(GPIO.BCM)
         shutdown_pin = 4
         GPIO.setup(shutdown_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-        # @callback
-        # def event_detect_callback(channel):
-        #     if GPIO.input(shutdown_pin):
-        #         _LOGGER.debug("Rising edge detected on 4")
-        #         # hass.bus.async_fire("argon40_event", {"key": "pressed"})
-        #     else:
-        #         _LOGGER.debug("Falling edge detected on 4")
-        #         hass.bus.async_fire("argon40_event", {"action": "double-tap"})
-
-        # GPIO.add_event_detect(shutdown_pin, GPIO.BOTH, callback=event_detect_callback)
-
         bus.write_byte(I2C_ADDRESS, 10)
 
-    except IOError as err:
+    except OSError as err:
         _LOGGER.exception(
             "Error %d, %s accessing 0x%02X: Check your I2C address",
             err.errno,
@@ -105,7 +81,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         hass.bus.async_fire("argon40_event", {"always_on": value})
 
     hass.services.async_register(
-        DOMAIN, SERVICE_SET_MODE, set_mode, schema=SERVICE_SET_MODE_SCHEMA,
+        DOMAIN,
+        SERVICE_SET_MODE,
+        set_mode,
+        schema=SERVICE_SET_MODE_SCHEMA,
     )
 
     return True
