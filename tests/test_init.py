@@ -7,8 +7,7 @@ from typing import TYPE_CHECKING
 import pytest
 import voluptuous as vol
 
-from homeassistant.loader import async_get_integration
-from homeassistant.setup import async_setup_component
+from homeassistant.exceptions import HomeAssistantError
 
 if TYPE_CHECKING:
     from unittest.mock import MagicMock
@@ -16,45 +15,7 @@ if TYPE_CHECKING:
     from homeassistant.core import Event, HomeAssistant
 
 
-@pytest.mark.parametrize(("revision", "bus_number"), [(1, 0), (2, 1), (3, 1), (4, 0)])
-async def test_setup(
-    hass: HomeAssistant,
-    hardware: tuple[MagicMock, MagicMock],
-    revision: int,
-    bus_number: int,
-    caplog: pytest.LogCaptureFixture,
-) -> None:
-    """Select the hardware bus, initialize the fan and register public services."""
-    gpio, bus_factory = hardware
-    gpio.RPI_REVISION = revision
-
-    assert await async_setup_component(hass, "argon40", {"argon40": {}})
-    integration = await async_get_integration(hass, "argon40")
-    assert f"Version: {integration.version}" in caplog.text
-
-    bus_factory.assert_called_once_with(bus_number)
-    bus_factory.return_value.write_byte.assert_called_once_with(0x1A, 10)
-    gpio.setup.assert_called_once_with(4, gpio.IN, pull_up_down=gpio.PUD_DOWN)
-    assert hass.services.has_service("argon40", "set_fan_speed")
-    assert hass.services.has_service("argon40", "set_mode")
-
-
-@pytest.mark.parametrize("failure", ["open", "write"])
-async def test_setup_io_error(
-    hass: HomeAssistant,
-    hardware: tuple[MagicMock, MagicMock],
-    failure: str,
-    caplog: pytest.LogCaptureFixture,
-) -> None:
-    """Fail setup cleanly without registering services when I2C is unavailable."""
-    _, bus_factory = hardware
-    target = bus_factory if failure == "open" else bus_factory.return_value.write_byte
-    target.side_effect = OSError(5, "I2C unavailable")
-
-    assert not await async_setup_component(hass, "argon40", {"argon40": {}})
-    assert "I2C unavailable" in caplog.text
-    assert not hass.services.has_service("argon40", "set_fan_speed")
-    assert not hass.services.has_service("argon40", "set_mode")
+pytestmark = pytest.mark.usefixtures("setup_entry")
 
 
 @pytest.mark.parametrize(
@@ -68,7 +29,6 @@ async def test_fan_speed(
     expected: int,
 ) -> None:
     """Validate service data, write the fan command and emit its public event."""
-    assert await async_setup_component(hass, "argon40", {"argon40": {}})
     bus = hardware[1].return_value
     bus.write_byte.reset_mock()
 
@@ -91,7 +51,6 @@ async def test_invalid_fan_speed(
     data: dict[str, object],
 ) -> None:
     """Reject invalid service data before touching the device."""
-    assert await async_setup_component(hass, "argon40", {"argon40": {}})
     bus = hardware[1].return_value
     bus.write_byte.reset_mock()
 
@@ -121,7 +80,6 @@ async def test_mode(
     expected: tuple[bool, int],
 ) -> None:
     """Validate mode input, send the device command and emit its public event."""
-    assert await async_setup_component(hass, "argon40", {"argon40": {}})
     bus = hardware[1].return_value
     bus.write_byte.reset_mock()
 
@@ -141,7 +99,6 @@ async def test_invalid_mode(
     data: dict[str, object],
 ) -> None:
     """Reject missing or invalid mode values without issuing I2C commands."""
-    assert await async_setup_component(hass, "argon40", {"argon40": {}})
     bus = hardware[1].return_value
     bus.write_byte.reset_mock()
 
@@ -163,10 +120,9 @@ async def test_service_io_error(
     data: dict[str, object],
 ) -> None:
     """Surface a failed hardware command without emitting a success event."""
-    assert await async_setup_component(hass, "argon40", {"argon40": {}})
     hardware[1].return_value.write_byte.side_effect = OSError(5, "I2C unavailable")
 
-    with pytest.raises(OSError, match="I2C unavailable"):
+    with pytest.raises(HomeAssistantError):
         await hass.services.async_call("argon40", service, data, blocking=True)
 
     await hass.async_block_till_done()

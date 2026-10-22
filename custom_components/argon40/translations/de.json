@@ -1,0 +1,71 @@
+{
+  "title": "Argon40",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Argon40 verbinden",
+        "description": "Aktiviere I2C, bevor du fortfährst. [Anleitung zur I2C-Einrichtung]({i2c_help_url}). Wähle deine Hardware aus. Im nächsten Schritt läuft der Lüfter kurz mit voller Drehzahl und wird anschließend wieder auf 10% eingestellt.",
+        "data": {
+          "device_type": "Hardware"
+        }
+      },
+      "confirm": {
+        "title": "Lüfter prüfen",
+        "description": "Hat sich der Lüfter während des Tests gedreht? Die I2C-Kommunikation kann die tatsächliche Drehung nicht bestätigen. Bestätige nur, wenn der Lüfter funktioniert hat.",
+        "data": {
+          "fan_working": "Der Lüfter hat funktioniert"
+        }
+      }
+    },
+    "error": {
+      "i2c_unavailable": "Der I2C-Bus ist nicht verfügbar oder der Zugriff wurde verweigert. Aktiviere I2C, starte den Raspberry Pi neu und prüfe den Zugriff auf /dev/i2c-1. Verwende die Anleitung oben.",
+      "fan_unavailable": "Unter der I2C-Adresse 0x1a hat kein nutzbarer Lüftercontroller geantwortet. Prüfe den Anschluss der Platine und die Stromversorgung und versuche es erneut.",
+      "gpio_unavailable": "Der GPIO-Anschluss der Taste ist nicht verfügbar oder wird bereits verwendet. Prüfe den Zugriff auf /dev/gpiochip* und beende andere Software, die GPIO4 verwendet.",
+      "fan_not_running": "Schließe die Einrichtung erst ab, wenn der Lüfter funktioniert. Prüfe seinen Anschluss, brich dann die Einrichtung ab und wiederhole den Test."
+    },
+    "abort": {
+      "already_configured": "Argon40 ist bereits eingerichtet.",
+      "already_in_progress": "Die Einrichtung von Argon40 läuft bereits."
+    }
+  },
+  "selector": {
+    "device_type": {
+      "options": {
+        "one_v2": "Argon ONE V2 (Raspberry Pi 4)",
+        "fan_hat": "Argon Fan HAT"
+      }
+    }
+  },
+  "entity": {
+    "event": {
+      "button": {
+        "name": "Taste",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "double": "Doppelklick",
+              "hold": "Gedrückt halten"
+            }
+          }
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "i2c_unavailable": {
+      "message": "Der I2C-Bus kann nicht geöffnet werden. Aktiviere I2C und prüfe den Zugriff auf /dev/i2c-1."
+    },
+    "fan_unavailable": {
+      "message": "Die Kommunikation mit dem Lüftercontroller unter der I2C-Adresse 0x1a ist nicht möglich."
+    },
+    "gpio_unavailable": {
+      "message": "Der GPIO-Anschluss der Gehäusetaste kann nicht reserviert werden. Prüfe die Geräteberechtigungen und andere Programme, die GPIO verwenden."
+    },
+    "not_configured": {
+      "message": "Füge Argon40 zuerst unter Geräte & Dienste hinzu und aktiviere die Integration."
+    },
+    "communication_error": {
+      "message": "Die Kommunikation mit dem Argon40-Controller über I2C ist nicht möglich."
+    }
+  }
+}

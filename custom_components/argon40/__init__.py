@@ -1,98 +1,110 @@
-"""Support for Argon 40 cases and Argon Fan HAT."""
+"""Set up Argon40 through a Home Assistant config entry."""
 
 import logging
 from typing import TYPE_CHECKING
 
-# Hardware libraries are installed by Home Assistant on the Raspberry Pi.
-from RPi import GPIO  # pylint: disable=import-error
-from smbus import SMBus  # pylint: disable=import-error
 import voluptuous as vol
 
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP, Platform
+from homeassistant.exceptions import ConfigEntryNotReady, ServiceValidationError
 import homeassistant.helpers.config_validation as cv
 from homeassistant.loader import async_get_integration
 
 from .const import (
     ATTR_ALWAYS_ON_NAME,
     ATTR_SPEED_NAME,
+    CONF_DEVICE_TYPE,
+    DEVICE_ONE,
     DOMAIN,
     SERVICE_SET_FAN_SPEED,
     SERVICE_SET_MODE,
     STARTUP_MESSAGE,
 )
+from .controller import Argon40Controller
+from .hardware import HardwareError
 
 if TYPE_CHECKING:
-    from homeassistant.core import HomeAssistant, ServiceCall
+    from homeassistant.core import Event, HomeAssistant, ServiceCall
     from homeassistant.helpers.typing import ConfigType
 
 _LOGGER = logging.getLogger(__name__)
+_PLATFORMS = [Platform.FAN, Platform.EVENT]
+
+type Argon40ConfigEntry = ConfigEntry[Argon40Controller]
 
 SERVICE_SET_FAN_SPEED_SCHEMA = vol.Schema(
     {vol.Required(ATTR_SPEED_NAME): vol.All(vol.Coerce(int), vol.Range(min=0, max=100))}
 )
-
 SERVICE_SET_MODE_SCHEMA = vol.Schema({vol.Required(ATTR_ALWAYS_ON_NAME): cv.boolean})
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)  # pylint: disable=invalid-name
 
-I2C_ADDRESS = 0x1A
 
-
-# Home Assistant requires this setup signature, including the unused config.
+# Home Assistant requires this signature; CONFIG_SCHEMA handles obsolete YAML.
 # pylint: disable-next=unused-argument
-async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:  # noqa: ARG001 - HA setup signature
-    """Set up the Argon40 component."""
-    integration = await async_get_integration(hass, DOMAIN)
-    _LOGGER.info(STARTUP_MESSAGE, integration.version)
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:  # noqa: ARG001
+    """Register the existing services without opening hardware from YAML."""
 
-    try:
-        rev = GPIO.RPI_REVISION
-        if rev in (2, 3):
-            bus = SMBus(1)
+    async def handle_service(call: ServiceCall) -> None:
+        entries = hass.config_entries.async_loaded_entries(DOMAIN)
+        if not entries:
+            raise ServiceValidationError(
+                translation_domain=DOMAIN, translation_key="not_configured"
+            )
+        controller = entries[0].runtime_data
+        if call.service == SERVICE_SET_FAN_SPEED:
+            await controller.async_set_speed(call.data[ATTR_SPEED_NAME])
         else:
-            bus = SMBus(0)
-
-        GPIO.setwarnings(False)  # noqa: FBT003 - RPi.GPIO's external API
-        GPIO.setmode(GPIO.BCM)
-        shutdown_pin = 4
-        GPIO.setup(shutdown_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
-        bus.write_byte(I2C_ADDRESS, 10)
-
-    except OSError as err:
-        _LOGGER.exception(
-            "Error %d, %s accessing 0x%02X: Check your I2C address",
-            err.errno,
-            err.strerror,
-            I2C_ADDRESS,
-        )
-        return False
-
-    async def set_fan_speed(service: ServiceCall) -> None:
-        value = service.data.get(ATTR_SPEED_NAME)
-        _LOGGER.debug("Set fan speed to %s", value)
-        bus.write_byte(I2C_ADDRESS, value)
-        hass.bus.async_fire("argon40_event", {"speed": value})
+            await controller.async_set_mode(always_on=call.data[ATTR_ALWAYS_ON_NAME])
 
     hass.services.async_register(
         DOMAIN,
         SERVICE_SET_FAN_SPEED,
-        set_fan_speed,
+        handle_service,
         schema=SERVICE_SET_FAN_SPEED_SCHEMA,
     )
-
-    async def set_mode(service: ServiceCall) -> None:
-        value = service.data.get(ATTR_ALWAYS_ON_NAME)
-        _LOGGER.debug("Set always on mode to %s", value)
-        if value:
-            bus.write_byte(I2C_ADDRESS, 254)  # 0xfe - always on mode
-        else:
-            bus.write_byte(I2C_ADDRESS, 253)  # 0xfd - the default mode
-
-        hass.bus.async_fire("argon40_event", {"always_on": value})
-
     hass.services.async_register(
-        DOMAIN,
-        SERVICE_SET_MODE,
-        set_mode,
-        schema=SERVICE_SET_MODE_SCHEMA,
+        DOMAIN, SERVICE_SET_MODE, handle_service, schema=SERVICE_SET_MODE_SCHEMA
     )
+    return True
 
+
+async def async_setup_entry(hass: HomeAssistant, entry: Argon40ConfigEntry) -> bool:
+    """Open the local hardware and forward its fan and optional button entity."""
+    integration = await async_get_integration(hass, DOMAIN)
+    _LOGGER.info(STARTUP_MESSAGE, integration.version)
+    controller = Argon40Controller(hass, entry.entry_id, entry.data[CONF_DEVICE_TYPE])
+    try:
+        await controller.async_connect()
+    except HardwareError as err:
+        raise ConfigEntryNotReady(
+            translation_domain=DOMAIN, translation_key=err.code
+        ) from err
+    entry.runtime_data = controller
+    platforms = (
+        _PLATFORMS if entry.data[CONF_DEVICE_TYPE] == DEVICE_ONE else [Platform.FAN]
+    )
+    try:
+        await hass.config_entries.async_forward_entry_setups(entry, platforms)
+    except Exception:
+        await controller.async_close()
+        raise
+
+    async def stop_hardware(_event: Event) -> None:
+        await controller.async_close()
+
+    entry.async_on_unload(
+        hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, stop_hardware)
+    )
+    return True
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: Argon40ConfigEntry) -> bool:
+    """Unload entities and release the I2C and GPIO handles."""
+    platforms = (
+        _PLATFORMS if entry.data[CONF_DEVICE_TYPE] == DEVICE_ONE else [Platform.FAN]
+    )
+    if not await hass.config_entries.async_unload_platforms(entry, platforms):
+        return False
+    await entry.runtime_data.async_close()
     return True

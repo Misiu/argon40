@@ -1,0 +1,71 @@
+{
+  "title": "Argon40",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect Argon40",
+        "description": "Enable I2C before continuing. [I2C setup instructions]({i2c_help_url}). Select your hardware. The next step briefly runs the fan at full speed, then restores it to 10%.",
+        "data": {
+          "device_type": "Hardware"
+        }
+      },
+      "confirm": {
+        "title": "Check the fan",
+        "description": "Did the fan spin during the test? I2C communication cannot confirm physical rotation. Only confirm if the fan worked.",
+        "data": {
+          "fan_working": "The fan worked"
+        }
+      }
+    },
+    "error": {
+      "i2c_unavailable": "The I2C bus is unavailable or access was denied. Enable I2C, reboot the Raspberry Pi and check access to /dev/i2c-1. Use the setup instructions above.",
+      "fan_unavailable": "No usable fan controller responded at I2C address 0x1a. Check the board connection and power, then try again.",
+      "gpio_unavailable": "The button GPIO is unavailable or already in use. Check access to /dev/gpiochip* and stop other software that controls GPIO4.",
+      "fan_not_running": "Do not finish setup until the fan works. Check its connection, then cancel and run the test again."
+    },
+    "abort": {
+      "already_configured": "Argon40 is already configured.",
+      "already_in_progress": "Argon40 setup is already in progress."
+    }
+  },
+  "selector": {
+    "device_type": {
+      "options": {
+        "one_v2": "Argon ONE V2 (Raspberry Pi 4)",
+        "fan_hat": "Argon Fan HAT"
+      }
+    }
+  },
+  "entity": {
+    "event": {
+      "button": {
+        "name": "Button",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "double": "Double click",
+              "hold": "Hold"
+            }
+          }
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "i2c_unavailable": {
+      "message": "Cannot open the I2C bus. Enable I2C and check access to /dev/i2c-1."
+    },
+    "fan_unavailable": {
+      "message": "Cannot communicate with the fan controller at I2C address 0x1a."
+    },
+    "gpio_unavailable": {
+      "message": "Cannot claim the case button GPIO. Check device permissions and other GPIO consumers."
+    },
+    "not_configured": {
+      "message": "Add and enable Argon40 through Devices & services first."
+    },
+    "communication_error": {
+      "message": "Unable to communicate with the Argon40 controller over I2C."
+    }
+  }
+}

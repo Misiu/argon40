@@ -1,0 +1,71 @@
+{
+  "title": "Argon40",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Połącz Argon40",
+        "description": "Przed kontynuowaniem włącz I2C. [Instrukcja konfiguracji I2C]({i2c_help_url}). Wybierz sprzęt. W następnym kroku wentylator na krótko uruchomi się z pełną prędkością, a następnie powróci do 10%.",
+        "data": {
+          "device_type": "Sprzęt"
+        }
+      },
+      "confirm": {
+        "title": "Sprawdź wentylator",
+        "description": "Czy wentylator obracał się podczas testu? Komunikacja I2C nie pozwala potwierdzić fizycznego ruchu wentylatora. Potwierdź tylko wtedy, gdy wentylator działał.",
+        "data": {
+          "fan_working": "Wentylator działał"
+        }
+      }
+    },
+    "error": {
+      "i2c_unavailable": "Magistrala I2C jest niedostępna lub odmówiono dostępu. Włącz I2C, uruchom ponownie Raspberry Pi i sprawdź dostęp do /dev/i2c-1. Skorzystaj z instrukcji konfiguracji powyżej.",
+      "fan_unavailable": "Kontroler wentylatora nie odpowiedział prawidłowo pod adresem I2C 0x1a. Sprawdź podłączenie płytki oraz zasilanie i spróbuj ponownie.",
+      "gpio_unavailable": "GPIO przycisku jest niedostępne lub już używane. Sprawdź dostęp do /dev/gpiochip* i zatrzymaj inne oprogramowanie korzystające z GPIO4.",
+      "fan_not_running": "Nie kończ konfiguracji, dopóki wentylator nie działa. Sprawdź jego podłączenie, a następnie anuluj konfigurację i powtórz test."
+    },
+    "abort": {
+      "already_configured": "Argon40 jest już skonfigurowane.",
+      "already_in_progress": "Konfiguracja Argon40 już trwa."
+    }
+  },
+  "selector": {
+    "device_type": {
+      "options": {
+        "one_v2": "Argon ONE V2 (Raspberry Pi 4)",
+        "fan_hat": "Argon Fan HAT"
+      }
+    }
+  },
+  "entity": {
+    "event": {
+      "button": {
+        "name": "Przycisk",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "double": "Podwójne kliknięcie",
+              "hold": "Przytrzymanie"
+            }
+          }
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "i2c_unavailable": {
+      "message": "Nie można otworzyć magistrali I2C. Włącz I2C i sprawdź dostęp do /dev/i2c-1."
+    },
+    "fan_unavailable": {
+      "message": "Nie można nawiązać komunikacji z kontrolerem wentylatora pod adresem I2C 0x1a."
+    },
+    "gpio_unavailable": {
+      "message": "Nie można uzyskać dostępu do GPIO przycisku obudowy. Sprawdź uprawnienia do urządzenia i inne programy korzystające z GPIO."
+    },
+    "not_configured": {
+      "message": "Najpierw dodaj i włącz Argon40 w sekcji Urządzenia i usługi."
+    },
+    "communication_error": {
+      "message": "Nie można nawiązać komunikacji z kontrolerem Argon40 przez I2C."
+    }
+  }
+}
