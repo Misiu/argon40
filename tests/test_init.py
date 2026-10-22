@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 import pytest
 import voluptuous as vol
 
+from homeassistant.loader import async_get_integration
 from homeassistant.setup import async_setup_component
 
 if TYPE_CHECKING:
@@ -21,12 +22,15 @@ async def test_setup(
     hardware: tuple[MagicMock, MagicMock],
     revision: int,
     bus_number: int,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Select the hardware bus, initialize the fan and register public services."""
     gpio, bus_factory = hardware
     gpio.RPI_REVISION = revision
 
     assert await async_setup_component(hass, "argon40", {"argon40": {}})
+    integration = await async_get_integration(hass, "argon40")
+    assert f"Version: {integration.version}" in caplog.text
 
     bus_factory.assert_called_once_with(bus_number)
     bus_factory.return_value.write_byte.assert_called_once_with(0x1A, 10)

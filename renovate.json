@@ -20,6 +20,12 @@
   ],
   "packageRules": [
     {
+      "description": "Keep the test harness for the declared minimum Home Assistant release",
+      "matchPackageNames": ["pytest-homeassistant-custom-component"],
+      "matchCurrentVersion": "0.13.201",
+      "enabled": false
+    },
+    {
       "matchManagers": ["pep621"],
       "matchDepTypes": ["requires-python"],
       "enabled": false

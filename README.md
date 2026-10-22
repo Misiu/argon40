@@ -16,35 +16,62 @@ _Component supports:_ [Argon ONE Raspberry Pi 4 Case][argon_one_pi4], [Argon ONE
 
 ![example][exampleimg]
 
-## Installation
+## Requirements and installation
 
-1. Enable I2C. This is the most important step. Disabled I2C prevents the integraion from running and shows an error in logs.
-   * [Official way](https://www.home-assistant.io/common-tasks/os#enable-i2c-via-home-assistant-operating-system-terminal)
-   * [Using Add-on HassOS I2C Configurator](https://community.home-assistant.io/t/add-on-hassos-i2c-configurator/264167) (the easiest way)
-3. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
-4. If you do not have a `custom_components` directory (folder) there, you need to create it.
-5. In the `custom_components` directory (folder) create a new folder called `argon40`.
-6. Download _all_ the files from the `custom_components/argon40/` directory (folder) in this repository.
-7. Place the files you downloaded in the new directory (folder) you created.
-8. Add `argon40:` to your `configuration.yaml`
-9. Restart Home Assistant
+Requires Home Assistant 2025.1 or newer and direct access to the Raspberry Pi's
+GPIO and I2C hardware. Enable I2C before installing the integration; see the
+[Home Assistant OS instructions](https://www.home-assistant.io/common-tasks/os#enable-i2c-via-home-assistant-operating-system-terminal).
 
-Using your HA configuration directory (folder) as a starting point you should now also have this:
+Add `Misiu/argon40` as a custom repository in HACS (category: Integration), then
+install Argon40. Alternatively, copy the entire `custom_components/argon40`
+directory from this repository into your Home Assistant configuration directory.
+Include all files and the `brand` directory. The resulting layout should include:
 
 ```text
 custom_components/argon40/__init__.py
 custom_components/argon40/const.py
 custom_components/argon40/manifest.json
 custom_components/argon40/services.yaml
+custom_components/argon40/brand/
 ```
 
-## Configuration is done via configuration.yaml
+Add this entry to `configuration.yaml`, then restart Home Assistant:
 
-<!---->
+```yaml
+argon40:
+```
 
-#### Config
+Configuration uses YAML; there is no setup flow in the UI. If setup fails, check
+Home Assistant's logs for the I2C error and verify that the hardware is accessible
+from your Home Assistant installation.
 
-1. Add CPU Temperature sensor:
+## Fan control
+
+The integration sets the initial fan speed to 10% and exposes two actions:
+
+| Action | Required data | Effect |
+| --- | --- | --- |
+| `argon40.set_fan_speed` | `speed`: integer from 0 to 100 | Send a fan speed command; 0 stops the fan. |
+| `argon40.set_mode` | `always_on`: boolean | Select always-on mode (`true`) or the default mode (`false`). |
+
+For example, use Developer Tools > Actions:
+
+```yaml
+action: argon40.set_fan_speed
+data:
+  speed: 40
+```
+
+```yaml
+action: argon40.set_mode
+data:
+  always_on: true
+```
+
+Temperature control requires your own automation. You can get a temperature
+sensor from the [System monitor integration](https://www.home-assistant.io/integrations/systemmonitor/#processor-temperature),
+or configure a command-line sensor:
+
 ```yaml
 command_line:
   - sensor:
@@ -54,39 +81,30 @@ command_line:
       unit_of_measurement: "°C"
       value_template: "{{ value | multiply(0.001) | round(1) }}"
 ```
-Or use [System monitor](https://www.home-assistant.io/integrations/systemmonitor/#processor-temperature) integration to get the CPU temperature
-2. Add automation:
+
+This example sets the fan to 40% after the temperature stays above 50°C for one
+minute. Add your own cooling and startup rules as needed; this example does not
+turn the fan down again or restore a speed after restarting Home Assistant.
+
 ```yaml
 automation:
   - alias: "Set fan speed"
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.cpu_temp
-      above: 50.0
-      for:
-        minutes: 1
-    action:
-      - service: argon40.set_fan_speed
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.cpu_temp
+        above: 50
+        for:
+          minutes: 1
+    actions:
+      - action: argon40.set_fan_speed
         data:
           speed: 40
 ```
 
-#### Bonus - button double-tap detection
-
-```yaml
-automation:
-  - alias: "Argon40 button double-tap"
-    trigger:
-      platform: event
-      event_type: argon40_event
-      event_data:
-        action: double-tap
-    action:
-      - service: persistent_notification.create
-        data:
-          title: "Argon 40"
-          message: "Button was double-tapped"
-```
+After a successful command, the integration fires `argon40_event` with either
+`speed` or `always_on` in its event data. These events describe the command sent;
+they do not report measured fan speed. Button double-tap detection is not
+implemented.
 
 ## Contributions are welcome!
 
@@ -101,7 +119,7 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 [buymecoffee]: https://www.buymeacoffee.com/Misiu
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
 
-[commits]: https://github.com/Misiu/argon40/commits/master
+[commits]: https://github.com/Misiu/argon40/commits/main
 [commits-shield]: https://img.shields.io/github/commit-activity/y/Misiu/argon40.svg?style=for-the-badge
 
 [hacs]: https://github.com/custom-components/hacs

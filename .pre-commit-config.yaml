@@ -18,6 +18,14 @@ repos:
         language: system
         types: [json]
         entry: uv run --frozen check-json
+      - id: pylint
+        name: Pylint (Linux Home Assistant test environment)
+        language: system
+        types: [python]
+        files: ^custom_components/
+        entry: python -m pylint
+        stages: [manual]
+        require_serial: true
       - id: check-toml
         name: Check TOML
         language: system

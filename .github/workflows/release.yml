@@ -1,29 +1,98 @@
-name: Release actions
+name: Release
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version from manifest.json (e.g. 0.0.7, without v)"
+        required: true
+        type: string
 
 permissions:
   contents: read
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
-  release_zip_file:
-    name: Prepare release asset
+  validate:
+    name: Validate release request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Validate branch and manifest version
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          import sys
+          from pathlib import Path
+
+          version = os.environ["RELEASE_VERSION"]
+          manifest = json.loads(Path("custom_components/argon40/manifest.json").read_text())
+          if os.environ["GITHUB_REF"] != "refs/heads/main":
+              sys.exit("Releases must run from main.")
+          if not re.fullmatch(r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)", version):
+              sys.exit("Use a stable MAJOR.MINOR.PATCH version without a v prefix.")
+          if manifest["version"] != version:
+              sys.exit("The requested version must match manifest.json. Update it before releasing.")
+          print(f"Validated version {version} at {os.environ['GITHUB_SHA']}")
+          PY
+      - name: Reject an existing tag or release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          if git show-ref --verify --quiet "refs/tags/${RELEASE_VERSION}"; then
+            echo "Tag already exists: ${RELEASE_VERSION}" >&2
+            exit 1
+          fi
+          if gh release view "${RELEASE_VERSION}" >/dev/null 2>&1; then
+            echo "Release already exists: ${RELEASE_VERSION}" >&2
+            exit 1
+          fi
+
+  quality:
+    name: Quality checks
+    needs: validate
+    uses: $/.github/workflows/pull_and_push.yml
+
+  tests:
+    name: Home Assistant tests and Pylint
+    needs: validate
+    uses: $/.github/workflows/tests.yml
+
+  publish:
+    name: Tag and publish release
+    needs: [quality, tests]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Check out repository
+      - name: Check out tested revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Create integration archive
         working-directory: custom_components/argon40
         run: zip -r "${RUNNER_TEMP}/argon40.zip" . -x '__pycache__/*' '*/__pycache__/*' '*.pyc'
-      - name: Upload archive to release
+      - name: Create tag and draft with asset, then publish
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: gh release upload "${RELEASE_TAG}" "${RUNNER_TEMP}/argon40.zip" --clobber
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          gh api --method POST "repos/${GH_REPO}/git/refs" \
+            -f "ref=refs/tags/${RELEASE_VERSION}" -f "sha=${GITHUB_SHA}"
+          gh release create "${RELEASE_VERSION}" "${RUNNER_TEMP}/argon40.zip" \
+            --verify-tag --generate-notes --title "${RELEASE_VERSION}" --draft
+          gh release edit "${RELEASE_VERSION}" --draft=false --latest

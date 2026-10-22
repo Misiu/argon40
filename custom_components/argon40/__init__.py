@@ -2,13 +2,15 @@
 
 import logging
 
-from RPi import GPIO
-from smbus import SMBus
+# Hardware libraries are installed by Home Assistant on the Raspberry Pi.
+from RPi import GPIO  # pylint: disable=import-error
+from smbus import SMBus  # pylint: disable=import-error
 import voluptuous as vol
 
 from homeassistant.core import HomeAssistant, ServiceCall
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.typing import ConfigType
+from homeassistant.loader import async_get_integration
 
 from .const import (
     ATTR_ALWAYS_ON_NAME,
@@ -30,9 +32,12 @@ SERVICE_SET_MODE_SCHEMA = vol.Schema({vol.Required(ATTR_ALWAYS_ON_NAME): cv.bool
 I2C_ADDRESS = 0x1A
 
 
+# Home Assistant requires this setup signature, including the unused config.
+# pylint: disable-next=unused-argument
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:  # noqa: ARG001 - HA setup signature
     """Set up the Argon40 component."""
-    _LOGGER.info(STARTUP_MESSAGE)
+    integration = await async_get_integration(hass, DOMAIN)
+    _LOGGER.info(STARTUP_MESSAGE, integration.version)
 
     try:
         rev = GPIO.RPI_REVISION

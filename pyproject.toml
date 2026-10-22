@@ -8,19 +8,38 @@ requires-python = ">=3.12"
 dev = [
   "pre-commit-hooks==6.0.0",
   "prek==0.5.7",
+  "pylint==4.1.3",
   "ruff==0.17.1",
   "zizmor==1.31.1",
 ]
 test = [
   "pytest-homeassistant-custom-component==0.13.373",
 ]
+test-min = [
+  "pytest-homeassistant-custom-component==0.13.201",
+]
 
 [tool.uv]
 package = false
 required-version = "==0.13.5"
+conflicts = [[{ group = "test" }, { group = "test-min" }]]
 
 [tool.uv.dependency-groups]
 test = { requires-python = ">=3.14.2" }
+test-min = { requires-python = ">=3.12,<3.13" }
+
+[tool.pylint.messages_control]
+disable = [
+  "abstract-method",
+  "format",
+  "unexpected-keyword-arg",
+  "used-before-assignment",
+]
+
+[tool.pylint.similarities]
+ignore-imports = true
+ignore-signatures = true
+min-similarity-lines = 12
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
