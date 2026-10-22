@@ -12,7 +12,7 @@ jobs:
     runs-on: "ubuntu-latest"
     name: Validate
     steps:
-        - uses: "actions/checkout@v4.2.2"
+        - uses: "actions/checkout@v7.0.1"
 
         - name: HACS Action
           uses: "hacs/action@main"
@@ -33,7 +33,7 @@ jobs:
           - "3.14"
     name: Python checks (${{ matrix.python-version }})
     steps:
-        - uses: "actions/checkout@v4.2.2"
+        - uses: "actions/checkout@v7.0.1"
         - uses: "actions/setup-python@v5.6.0"
           with:
             python-version: ${{ matrix.python-version }}
