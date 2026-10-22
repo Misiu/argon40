@@ -78,10 +78,55 @@ Ruff targets Python 3.12 because the integration supports Home Assistant 2025.1
 and newer. CI also checks syntax on Python 3.13 and 3.14. These checks do not
 replace testing against Home Assistant or testing the hardware on a Raspberry Pi.
 Runtime dependencies remain in `custom_components/argon40/manifest.json`; the uv
-environment contains development tools and does not install Home Assistant or
-the Raspberry Pi libraries.
+default environment contains development tools without Home Assistant or the
+Raspberry Pi libraries. The separate `test` group installs Home Assistant.
 
 ## Test your code modification
+
+On Linux with Python 3.14.2 or newer, run the integration tests against the
+stable Home Assistant version pinned by the test harness in `uv.lock`:
+
+```shell
+uv sync --frozen --group test
+uv run --no-sync python -m pytest
+```
+
+The tests use Home Assistant's real loader, service registry, validation, and
+event bus. GPIO and SMBus are mocked, and installation of native hardware
+requirements is skipped. Real Raspberry Pi testing is still required before
+claiming hardware compatibility.
+
+The stable test workflow runs on pull requests and pushes to `main` and
+`develop`. Renovate updates the pinned test harness and its matching HA release.
+The separate HA dev workflow runs on pushes to `develop`, manual dispatch, and
+a daily schedule. GitHub activates scheduled workflows only on the default
+branch, so the daily run starts once this workflow reaches `main`.
+Keep the stable test check required for merging; the HA dev check is an early
+warning and should not be a required release check.
+
+To reproduce the dev check, use a separate environment so the stable test
+environment remains locked:
+
+```shell
+UV_PROJECT_ENVIRONMENT=.venv-ha-dev uv sync --frozen --group test
+UV_PROJECT_ENVIRONMENT=.venv-ha-dev uv pip uninstall pytest-homeassistant-custom-component
+UV_PROJECT_ENVIRONMENT=.venv-ha-dev uv pip install --prerelease=allow \
+  'homeassistant @ git+https://github.com/home-assistant/core.git@dev' \
+  'pytest-home-assistant @ git+https://github.com/home-assistant/core.git@dev#subdirectory=packages/pytest-home-assistant'
+UV_PROJECT_ENVIRONMENT=.venv-ha-dev uv run --no-sync python -m pytest \
+  -p no:respx --no-cov
+```
+
+The dev job replaces the released community harness with the official test
+helpers from the same Core dev source as Home Assistant. They must not be
+installed together because their pytest fixtures overlap. Disabling the separate
+respx plugin lets HA initialize its HTTP module alias first. `--no-sync` preserves
+the HA dev installation instead of restoring the stable version from `uv.lock`.
+
+Published GitHub releases receive `argon40.zip` through `gh release upload`.
+The archive contains only the integration directory, including its brand images,
+with no extra parent directory or Python cache files. Testing the workflow does
+not require publishing a real release.
 
 This custom component is based on [blueprint template](https://github.com/custom-components/blueprint).
 

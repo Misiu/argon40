@@ -20,12 +20,10 @@ jobs:
           persist-credentials: false
       - name: Create integration archive
         working-directory: custom_components/argon40
-        run: zip -r "${RUNNER_TEMP}/argon40.zip" . -x '*/__pycache__/*' '*.pyc'
+        run: zip -r "${RUNNER_TEMP}/argon40.zip" . -x '__pycache__/*' '*/__pycache__/*' '*.pyc'
       - name: Upload archive to release
-        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # 2.11.5
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ runner.temp }}/argon40.zip
-          asset_name: argon40.zip
-          tag: ${{ github.ref }}
-          overwrite: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "${RELEASE_TAG}" "${RUNNER_TEMP}/argon40.zip" --clobber
