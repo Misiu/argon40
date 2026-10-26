@@ -13,7 +13,7 @@ dev = [
   "zizmor==1.31.1",
 ]
 test = [
-  "pytest-homeassistant-custom-component==0.13.373",
+  "pytest-homeassistant-custom-component==0.13.375",
 ]
 test-min = [
   "pytest-homeassistant-custom-component==0.13.344",
