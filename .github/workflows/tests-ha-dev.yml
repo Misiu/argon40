@@ -37,7 +37,7 @@ jobs:
           uv pip uninstall pytest-homeassistant-custom-component
           uv pip install --prerelease=allow \
             'homeassistant @ git+https://github.com/home-assistant/core.git@dev' \
-            'pytest-home-assistant @ git+https://github.com/home-assistant/core.git@dev#subdirectory=packages/pytest-home-assistant'
+            'pytest-homeassistant @ git+https://github.com/home-assistant/core.git@dev#subdirectory=packages/pytest-homeassistant'
       - name: Show Home Assistant version
         run: uv run --no-sync python -c 'from homeassistant.const import __version__; print(__version__)'
       - name: Run integration tests
