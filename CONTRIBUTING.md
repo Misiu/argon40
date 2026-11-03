@@ -136,7 +136,7 @@ UV_PROJECT_ENVIRONMENT=.venv-ha-dev uv sync --frozen --group test
 UV_PROJECT_ENVIRONMENT=.venv-ha-dev uv pip uninstall pytest-homeassistant-custom-component
 UV_PROJECT_ENVIRONMENT=.venv-ha-dev uv pip install --prerelease=allow \
   'homeassistant @ git+https://github.com/home-assistant/core.git@dev' \
-  'pytest-home-assistant @ git+https://github.com/home-assistant/core.git@dev#subdirectory=packages/pytest-home-assistant'
+  'pytest-homeassistant @ git+https://github.com/home-assistant/core.git@dev#subdirectory=packages/pytest-homeassistant'
 UV_PROJECT_ENVIRONMENT=.venv-ha-dev uv run --no-sync python -m pytest \
   -p no:respx --no-cov
 ```
