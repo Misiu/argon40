@@ -10,5 +10,5 @@
     "gpiod==2.5.0",
     "smbus-cffi==0.5.1"
   ],
-  "version": "0.1.0"
+  "version": "0.1.1"
 }
