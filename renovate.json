@@ -9,6 +9,12 @@
   "lockFileMaintenance": {
     "enabled": true
   },
+  "customDatasources": {
+    "home-assistant-python": {
+      "defaultRegistryUrlTemplate": "https://raw.githubusercontent.com/home-assistant/core/master/.python-version",
+      "format": "plain"
+    }
+  },
   "customManagers": [
     {
       "customType": "regex",
@@ -19,6 +25,15 @@
     }
   ],
   "packageRules": [
+    {
+      "description": "Follow the Python major and minor version used by stable Home Assistant",
+      "matchManagers": ["pyenv"],
+      "matchPackageNames": ["python"],
+      "overrideDatasource": "custom.home-assistant-python",
+      "extractVersion": "^(?<version>\\d+\\.\\d+)\\.\\d+$",
+      "versioning": "pep440",
+      "automerge": false
+    },
     {
       "description": "Keep the test harness for the declared minimum Home Assistant release",
       "matchPackageNames": ["pytest-homeassistant-custom-component"],
